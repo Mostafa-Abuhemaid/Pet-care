@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Web.Application.DTOs;
 using Web.Application.DTOs.AccountDTO;
+using Web.Application.Interfaces;
 using Web.Application.Response;
 using Web.Infrastructure.Service;
 
@@ -11,12 +14,14 @@ namespace Web.APIs.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly AccountService _accountService;
-        public AccountController(AccountService accountService)
-        {
+            private readonly IAccountService _accountService;
 
-            _accountService = accountService;
-        }
+            public AccountController(IAccountService accountService) 
+            {
+                _accountService = accountService;
+            }
+        
+
         [HttpPost("Login")]
         public async Task<ActionResult<BaseResponse<TokenDTO>>> Login(LoginDTO loginDto)
         {
@@ -24,6 +29,17 @@ namespace Web.APIs.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
 
         }
+
+        [HttpPost("signup")]
+        public async Task<IActionResult> RegisterAsync(RegisterDTO request)
+        {
+            var result = await _accountService
+                .RegisterAsync(request);
+
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+
         [HttpPost("ForgetPassword")]
         public async Task<ActionResult<BaseResponse<string>>> ForgetPassword([FromBody] ForgetPasswordDto request)
         {

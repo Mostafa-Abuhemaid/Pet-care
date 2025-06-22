@@ -10,12 +10,8 @@ namespace Web.Application.DTOs.AccountDTO
 {
     public class TokenDTO
     {
-        public string UserId { get; set; }
-        public string Name { get; set; }
+        public string UserId { get; set; }=string.Empty;
 
-        public string Email { get; set; }
-        public Gender gender { get; set; }
-
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
     }
 }
