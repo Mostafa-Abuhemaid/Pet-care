@@ -1,7 +1,10 @@
 
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using System.Reflection;
 using Web.Application.DTOs.EmailDTO;
 using Web.Application.Interfaces;
 using Web.Application.Mapping;
@@ -17,6 +20,20 @@ namespace Web.APIs
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()   
+                    //.WithOrigins("https://")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
+
+
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -37,6 +54,10 @@ namespace Web.APIs
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddMemoryCache();
+            builder.Services
+                .AddFluentValidationAutoValidation()
+                .AddValidatorsFromAssembly(Assembly.Load("Web.Application"));
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -44,6 +65,7 @@ namespace Web.APIs
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors();
 
             app.UseHttpsRedirection();
 
