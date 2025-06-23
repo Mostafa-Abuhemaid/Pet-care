@@ -11,6 +11,7 @@ namespace Web.Application.Interfaces
     public interface IAccountService
     {
         Task<BaseResponse<TokenDTO>> LoginAsync(LoginDTO loginDto);
+        Task<BaseResponse<TokenDTO>> RegisterAsync(RegisterDTO registerDTO);
         Task<BaseResponse<string>> ForgotPasswordAsync(ForgetPasswordDto request);
         Task<BaseResponse<bool>> VerifyOTPAsync(VerfiyCodeDto verify);
         Task<BaseResponse<bool>> ResetPasswordAsync(ResetPasswordDto resetPassword);
