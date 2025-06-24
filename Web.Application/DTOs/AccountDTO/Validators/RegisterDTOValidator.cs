@@ -17,10 +17,12 @@ namespace Web.Application.DTOs.AccountDTO.Validators
               .EmailAddress();
 
 
-
             RuleFor(x => x.Password)
-                .NotEmpty()
-                .Matches(PasswordRegexPatterns.Password);
+    .NotEmpty()
+    .MinimumLength(6).WithMessage("Password must be at least 6 characters long")
+    .MaximumLength(12).WithMessage("Password must not exceed 12 characters")
+    .Matches(PasswordRegexPatterns.Password).WithMessage("Password must contain uppercase and lowercase letters, numbers, and special characters");
+
 
             RuleFor(x => x.ConfirmPassword)
        .NotEmpty().WithMessage("Confirm Password is required.")
