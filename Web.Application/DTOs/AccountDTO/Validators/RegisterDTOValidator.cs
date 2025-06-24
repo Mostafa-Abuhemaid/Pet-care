@@ -19,7 +19,7 @@ namespace Web.Application.DTOs.AccountDTO.Validators
 
             RuleFor(x => x.Password)
     .NotEmpty()
-    .MinimumLength(6).WithMessage("Password must be at least 6 characters long")
+    .MinimumLength(8).WithMessage("Password must be at least 8 characters long")
     .MaximumLength(12).WithMessage("Password must not exceed 12 characters")
     .Matches(PasswordRegexPatterns.Password).WithMessage("Password must contain uppercase and lowercase letters, numbers, and special characters");
 
