@@ -10,6 +10,7 @@ namespace Web.Domain.Entites
 {
     public class AppUser : IdentityUser
     {
-   public Gender gender {  get; set; }
+        public string FullName { get; set; }=string.Empty;
+        public Gender gender {  get; set; }
     }
 }
