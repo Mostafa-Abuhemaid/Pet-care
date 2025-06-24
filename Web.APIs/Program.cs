@@ -57,6 +57,7 @@ namespace Web.APIs
             builder.Services
                 .AddFluentValidationAutoValidation()
                 .AddValidatorsFromAssembly(Assembly.Load("Web.Application"));
+           
 
             var app = builder.Build();
 
