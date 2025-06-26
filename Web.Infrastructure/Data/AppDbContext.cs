@@ -27,6 +27,9 @@ namespace Web.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configure TPC inheritance
+            modelBuilder.Entity<Pet>().UseTpcMappingStrategy();
+            modelBuilder.Entity<Pet_Cat>().ToTable("Pet_Cats");
             base.OnModelCreating(modelBuilder); // Important for Identity
             modelBuilder.Entity<BreedingRequest>()
                 .HasOne(br => br.RequesterPet)

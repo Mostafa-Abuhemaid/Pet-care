@@ -4,6 +4,8 @@ using Web.Domain.Entites;
 
 namespace PetCare.Api.Entities
 {
+    [NotMapped] // Explicitly mark as not mapped to database
+
     public abstract class Pet : BaseModel
     {
        

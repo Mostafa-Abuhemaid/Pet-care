@@ -4,6 +4,8 @@ using Web.Domain.Entites;
 
 namespace PetCare.Api.Entities
 {
+    [Table("Pet_Cats")] // Explicit table name
+
     public class Pet_Cat: Pet
     {
 
