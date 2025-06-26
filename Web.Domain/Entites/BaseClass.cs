@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Web.Domain.Entites
 {
-    public class BaseClass<T>
-    {
-        public T Id { get; set; }
-    }
+    //public class BaseClass<T>
+    //{
+    //    public T Id { get; set; }
+    //}
 }

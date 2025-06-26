@@ -1,0 +1,20 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using Web.Domain.Entites;
+
+namespace PetCare.Api.Entities
+{
+    [Table("Pet_Cats")] // Explicit table name
+
+    public class Pet_Cat: Pet
+    {
+
+        // Foreign key to owner
+        [Required]
+        [ForeignKey("Cat_Data")]
+        public int Cat_DataId { get; set; }
+        public Cat_Data Cat_Data { get; set; }
+
+    }
+
+}
