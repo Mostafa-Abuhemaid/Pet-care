@@ -6,11 +6,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Web.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class add_database : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateSequence(
+                name: "PetSequence");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -50,6 +53,29 @@ namespace Web.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BreedingRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RequesterPetId = table.Column<int>(type: "int", nullable: false),
+                    TargetPetId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Createdon = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedByid = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    Updatedon = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BreedingRequests", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,11 +234,10 @@ namespace Web.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pet",
+                name: "Pet_Cats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false, defaultValueSql: "NEXT VALUE FOR [PetSequence]"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Breed = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
@@ -220,8 +245,7 @@ namespace Web.Infrastructure.Migrations
                     PhotoUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsInBreedingPeriod = table.Column<bool>(type: "bit", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    Cat_DataId = table.Column<int>(type: "int", nullable: true),
+                    Cat_DataId = table.Column<int>(type: "int", nullable: false),
                     Createdon = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedByid = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
@@ -229,15 +253,15 @@ namespace Web.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pet", x => x.Id);
+                    table.PrimaryKey("PK_Pet_Cats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pet_AspNetUsers_AppUserId",
+                        name: "FK_Pet_Cats_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Pet_Cat_Data_Cat_DataId",
+                        name: "FK_Pet_Cats_Cat_Data_Cat_DataId",
                         column: x => x.Cat_DataId,
                         principalTable: "Cat_Data",
                         principalColumn: "Id",
@@ -275,41 +299,6 @@ namespace Web.Infrastructure.Migrations
                         principalTable: "VetClinics",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BreedingRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RequesterPetId = table.Column<int>(type: "int", nullable: false),
-                    TargetPetId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Createdon = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedByid = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
-                    Updatedon = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BreedingRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BreedingRequests_Pet_RequesterPetId",
-                        column: x => x.RequesterPetId,
-                        principalTable: "Pet",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BreedingRequests_Pet_TargetPetId",
-                        column: x => x.TargetPetId,
-                        principalTable: "Pet",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -362,13 +351,13 @@ namespace Web.Infrastructure.Migrations
                 column: "TargetPetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pet_AppUserId",
-                table: "Pet",
+                name: "IX_Pet_Cats_AppUserId",
+                table: "Pet_Cats",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pet_Cat_DataId",
-                table: "Pet",
+                name: "IX_Pet_Cats_Cat_DataId",
+                table: "Pet_Cats",
                 column: "Cat_DataId");
 
             migrationBuilder.CreateIndex(
@@ -404,22 +393,25 @@ namespace Web.Infrastructure.Migrations
                 name: "BreedingRequests");
 
             migrationBuilder.DropTable(
+                name: "Pet_Cats");
+
+            migrationBuilder.DropTable(
                 name: "VetReviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Pet");
-
-            migrationBuilder.DropTable(
-                name: "VetClinics");
+                name: "Cat_Data");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Cat_Data");
+                name: "VetClinics");
+
+            migrationBuilder.DropSequence(
+                name: "PetSequence");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PetCare.Api.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace Web.Domain.Entites
     {
         public string FullName { get; set; }=string.Empty;
         public Gender gender {  get; set; }
+
+        public ICollection<Pet> Pets { get; set; } // Ahmed Elsaadany
     }
 }
