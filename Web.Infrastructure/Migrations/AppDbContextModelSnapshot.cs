@@ -22,6 +22,8 @@ namespace Web.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence("PetSequence");
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -293,9 +295,10 @@ namespace Web.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR [PetSequence]");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseSequence(b.Property<int>("Id"));
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
@@ -314,11 +317,6 @@ namespace Web.Infrastructure.Migrations
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -349,11 +347,9 @@ namespace Web.Infrastructure.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Pet");
+                    b.ToTable((string)null);
 
-                    b.HasDiscriminator().HasValue("Pet");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.VetClinic", b =>
@@ -529,7 +525,7 @@ namespace Web.Infrastructure.Migrations
 
                     b.HasIndex("Cat_DataId");
 
-                    b.HasDiscriminator().HasValue("Pet_Cat");
+                    b.ToTable("Pet_Cats", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -605,7 +601,7 @@ namespace Web.Infrastructure.Migrations
             modelBuilder.Entity("PetCare.Api.Entities.Pet", b =>
                 {
                     b.HasOne("Web.Domain.Entites.AppUser", "AppUser")
-                        .WithMany()
+                        .WithMany("Pets")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -646,6 +642,11 @@ namespace Web.Infrastructure.Migrations
             modelBuilder.Entity("PetCare.Api.Entities.VetClinic", b =>
                 {
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.AppUser", b =>
+                {
+                    b.Navigation("Pets");
                 });
 #pragma warning restore 612, 618
         }
