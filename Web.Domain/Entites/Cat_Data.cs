@@ -12,18 +12,18 @@ namespace PetCare.Api.Entities
         [MaxLength(100)]
         public string Breed { get; set; }
         [Required]
-        double MaleAverageWeight { get; set; }
+        public double MaleAverageWeight { get; set; }
         [Required]
 
-        double MaleAverageSize { get; set; }
+        public double MaleAverageSize { get; set; }
         [Required]
-        string MaleTemperament { get; set; }
+        public string MaleTemperament { get; set; }
         [Required]
-        double FemaleAverageWeight { get; set; }
+        public double FemaleAverageWeight { get; set; }
         [Required]
-        double FemaleAverageSize { get; set; }
+        public double FemaleAverageSize { get; set; }
         [Required]
-        string FemaleTemperament { get; set; }
+        public string FemaleTemperament { get; set; }
 
 
         [MaxLength(500)]

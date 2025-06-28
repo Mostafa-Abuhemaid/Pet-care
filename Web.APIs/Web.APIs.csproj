@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Web.Infrastructure\Web.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Pet\" />
+  </ItemGroup>
+
 </Project>
