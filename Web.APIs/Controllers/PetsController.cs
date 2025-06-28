@@ -15,7 +15,7 @@ namespace Web.APIs.Controllers
         private readonly IPetProfileService _petProfileService = petProfileService;
 
         [HttpPost("")]
-        public async Task<IActionResult>Add([FromBody] PetRequest request,CancellationToken cancellationToken)
+        public async Task<IActionResult>Add([FromForm] PetRequest request,CancellationToken cancellationToken)
         {
             var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var result=await _petProfileService.AddAsync(request,userid,cancellationToken);
