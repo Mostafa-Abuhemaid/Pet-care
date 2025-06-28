@@ -14,6 +14,7 @@ using Web.Infrastructure.Data;
 using MapsterMapper;
 using Mapster;
 using PetCare.Api.Entities;
+using Web.Application.Files;
 
 namespace Web.Infrastructure.Service
 {
@@ -32,7 +33,7 @@ namespace Web.Infrastructure.Service
             if (petExists)
                 return new BaseResponse<PetResponse>(false, "Another Pet with the same name already exists.");
 
-            var photoPath = await SavePetPhotoAsync(request.Photo);
+            var photoPath =Files.UploadFile(request.Photo, "Pet");
 
             var pet = request.Adapt<Pet_Cat>();
             pet.PhotoUrl = photoPath;
@@ -85,8 +86,8 @@ namespace Web.Infrastructure.Service
 
 
             if (request.Photo != null)
-                pet.PhotoUrl = await SavePetPhotoAsync(request.Photo);
-
+                pet.PhotoUrl = Files.UploadFile(request.Photo, "Pet");
+            
             pet.Name = request.Name;
             pet.Breed = request.Breed;
             pet.Age = request.Age;
@@ -114,27 +115,6 @@ namespace Web.Infrastructure.Service
         }
 
 
-
-        private async Task<string> SavePetPhotoAsync(IFormFile photoFile)
-        {
-            if (photoFile == null || photoFile.Length == 0)
-                return null!;
-
-            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(photoFile.FileName);
-
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "pets");
-
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-
-            var filePath = Path.Combine(folderPath, uniqueFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await photoFile.CopyToAsync(stream);
-            }
-            return $"/images/pets/{uniqueFileName}";
-        }
 
 
     }
