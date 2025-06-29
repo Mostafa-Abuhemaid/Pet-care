@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Data;
 namespace Web.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250629012622_testDatabase")]
+    partial class testDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -540,6 +543,11 @@ namespace Web.Infrastructure.Migrations
                 {
                     b.HasBaseType("PetCare.Api.Entities.Pet");
 
+                    b.Property<int>("Cat_DataId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("Cat_DataId");
+
                     b.ToTable("Pet_Cats", (string)null);
                 });
 
@@ -641,6 +649,17 @@ namespace Web.Infrastructure.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("VetClinic");
+                });
+
+            modelBuilder.Entity("PetCare.Api.Entities.Pet_Cat", b =>
+                {
+                    b.HasOne("PetCare.Api.Entities.Cat_Data", "Cat_Data")
+                        .WithMany()
+                        .HasForeignKey("Cat_DataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cat_Data");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.VetClinic", b =>
