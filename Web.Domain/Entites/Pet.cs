@@ -11,29 +11,38 @@ namespace PetCare.Api.Entities
        
             [Required]
             [MaxLength(100)]
-            public string Name { get; set; }
+            public string Name { get; set; } = string.Empty;
 
-            [Required]
+        [Required]
             [MaxLength(100)]
-            public string Breed { get; set; }
+            public string Breed { get; set; } = string.Empty;
 
-            [Required]
-            [Range(0, 50)]
-            public int Age { get; set; }
+        [Required]
+        public DateOnly BirthDay { get; set; }
+
+        [Required]
+            [MaxLength(10)]
+            public string Gender { get; set; } = string.Empty;
 
             [Required]
             [MaxLength(10)]
-            public string Gender { get; set; }
+            public string Color { get; set; }=string.Empty;
 
-            [Url]
+        [Required]
+        public int Weight { get; set; }
+        [Required]
+        [MaxLength(1000)]
+        public string MedicalCondidtions { get; set; } = string.Empty;
+
+             [Url]
             [MaxLength(255)]
-            public string PhotoUrl { get; set; }
+            public string PhotoUrl { get; set; } = string.Empty;
 
-            [Required]
+        [Required]
             [ForeignKey("AppUser")]
-            public string AppUserId { get; set; }
+            public string AppUserId { get; set; } = string.Empty;
 
-            public AppUser AppUser { get; set; }
+        public AppUser AppUser { get; set; } = default!;
 
             public bool IsInBreedingPeriod { get; set; }
         }
