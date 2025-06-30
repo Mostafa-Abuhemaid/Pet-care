@@ -8,11 +8,15 @@ namespace Web.Application.DTOs.PetProfileDTO
 {
     public record PetResponse(
             int Id,
-            string Name,
+        string Name,
        string Breed,
-       int Age,
+      int Age,
+        string Color,
+         int Weight,
        string Gender,
-     string PhotoUrl 
-        
+        string MedicalCondidtions,
+         bool IsInBreedingPeriod,
+     string PhotoUrl
+
         );
 }

@@ -11,8 +11,12 @@ namespace Web.Application.DTOs.PetProfileDTO
     (
        string Name ,
        string Breed ,
-       int Age ,
+       DateOnly BirthDay,
+        string Color,
+         int Weight,
        string Gender ,
-       IFormFile Photo 
+        string MedicalCondidtions,
+         bool IsInBreedingPeriod,
+             IFormFile Photo 
     );
 }

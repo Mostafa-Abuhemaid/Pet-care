@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Data;
 namespace Web.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630210846_Update columns PET")]
+    partial class UpdatecolumnsPET
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,9 +327,6 @@ namespace Web.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateOnly>("BirthDay")
-                        .HasColumnType("date");
-
                     b.Property<string>("Breed")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -372,9 +372,6 @@ namespace Web.Infrastructure.Migrations
 
                     b.Property<DateTime?>("Updatedon")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Weight")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
