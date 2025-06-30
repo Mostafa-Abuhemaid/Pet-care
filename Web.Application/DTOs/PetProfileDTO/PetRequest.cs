@@ -16,7 +16,7 @@ namespace Web.Application.DTOs.PetProfileDTO
          int Weight,
        string Gender ,
         string MedicalCondidtions,
-         bool IsInBreedingPeriod,
-             IFormFile Photo 
+         bool? IsInBreedingPeriod,
+             IFormFile? Photo 
     );
 }
