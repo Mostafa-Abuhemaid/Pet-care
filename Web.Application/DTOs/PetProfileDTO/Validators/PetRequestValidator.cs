@@ -21,10 +21,6 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
                 .NotEmpty()
                 .WithMessage("Breed is required.");
 
-            RuleFor(x => x.Age)
-                .GreaterThanOrEqualTo(1)
-                .WithMessage("Age cannot be negative or Zero.");
-
             RuleFor(x => x.Gender)
                 .NotEmpty().WithMessage("Gender is required.")
                 .Must(g => g == "Male" || g == "Female")
@@ -50,7 +46,21 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
                 .Must(file => file == null || file.Length <= 5 * 1024 * 1024)
                 .WithMessage("Photo size must not exceed 5MB.");
 
+            RuleFor(x => x.Color)
+    .NotEmpty().WithMessage("Color is required.")
+    .MaximumLength(10).WithMessage("Color must not exceed 10 characters.");
 
+            RuleFor(x => x.Weight)
+                .GreaterThanOrEqualTo(0).WithMessage("Weight must be greater than or equal to 0.")
+                .LessThanOrEqualTo(500).WithMessage("Weight must not exceed 500 kg.");
+
+            RuleFor(x => x.BirthDay)
+                .NotEmpty().WithMessage("BirthDay is required.")
+                .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today)).WithMessage("BirthDay cannot be in the future.")
+                .GreaterThan(DateOnly.FromDateTime(DateTime.Today.AddYears(-30))).WithMessage("BirthDay is too old, please enter a valid age.");
+
+            RuleFor(x => x.MedicalCondidtions)
+                .MaximumLength(1000).WithMessage("Medical Conditions must not exceed 1000 characters.");
 
 
 
