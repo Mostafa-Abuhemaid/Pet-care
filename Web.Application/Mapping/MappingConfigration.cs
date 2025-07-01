@@ -10,9 +10,9 @@ namespace Web.Application.Mapping
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<Pet, PetResponse>()
-                 .Map(dest => dest.Age, src =>
-        DateTime.Today.Year - src.BirthDay.Year - (DateTime.Today.DayOfYear < src.BirthDay.DayOfYear ? 1 : 0));
+        //    config.NewConfig<Pet, PetResponse>()
+        //         .Map(dest => dest.Age, src =>
+        //DateTime.Today.Year - src.BirthDay.Year - (DateTime.Today.DayOfYear < src.BirthDay.DayOfYear ? 1 : 0));
 
 
         }
