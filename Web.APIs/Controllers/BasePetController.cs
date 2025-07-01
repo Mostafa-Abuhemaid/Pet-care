@@ -6,6 +6,7 @@ using Web.Application.Response;
 using PetCare.Api.Entities;
 using Web.Infrastructure.Service;
 using Web.Domain.Enums;
+using FluentValidation;
 
 namespace PetCare.Api.Controllers
 {
