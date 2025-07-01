@@ -55,9 +55,12 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
                 .LessThanOrEqualTo(500).WithMessage("Weight must not exceed 500 kg.");
 
             RuleFor(x => x.BirthDay)
-                .NotEmpty().WithMessage("BirthDay is required.")
-                .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today)).WithMessage("BirthDay cannot be in the future.")
-                .GreaterThan(DateOnly.FromDateTime(DateTime.Today.AddYears(-30))).WithMessage("BirthDay is too old, please enter a valid age.");
+       .NotEmpty().WithMessage("BirthDay is required.")
+       .Must(birthDay => birthDay != default(DateOnly)).WithMessage("BirthDay is required.")
+       .Must(birthDay => birthDay <= DateOnly.FromDateTime(DateTime.Today))
+       .WithMessage("BirthDay cannot be in the future.")
+       .Must(birthDay => birthDay > DateOnly.FromDateTime(DateTime.Today.AddYears(-30)))
+       .WithMessage("BirthDay is too old, please enter a valid age.");
 
             RuleFor(x => x.MedicalCondidtions)
                 .MaximumLength(1000).WithMessage("Medical Conditions must not exceed 1000 characters.");

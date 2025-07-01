@@ -10,7 +10,7 @@ namespace Web.Application.DTOs.PetProfileDTO
             int Id,
         string Name,
        string Breed,
-      int Age,
+        DateOnly BirthDay,
         string Color,
          int Weight,
        string Gender,

@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using PetCare.Api.Entities;
 using Web.Application.DTOs.PetProfileDTO;
@@ -11,14 +12,24 @@ namespace Web.Infrastructure.Service
     public class BasePetService<T> where T : Pet, new()
     {
         private readonly AppDbContext _context;
+        private readonly IValidator<PetRequest> _validator;
 
-        public BasePetService(AppDbContext context)
+        public BasePetService(AppDbContext context,IValidator<PetRequest>validator)
         {
             _context = context;
+            _validator = validator;
         }
 
         public async Task<BaseResponse<PetResponse>> AddAsync(PetRequest request, string userId, CancellationToken cancellationToken = default)
         {
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return new BaseResponse<PetResponse>(false, $"Validation failed:{errors}");
+            }
+
             if (request == null)
                 return new BaseResponse<PetResponse>(false, "Request is required.");
 
@@ -67,6 +78,14 @@ namespace Web.Infrastructure.Service
 
         public async Task<BaseResponse<bool>> UpdateAsync(int id, PetRequest request, string userId, CancellationToken cancellationToken = default)
         {
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return new BaseResponse<bool>(false, $"Validation failed: {errors}");
+            }
+
             if (request == null)
                 return new BaseResponse<bool>(false, "Request is required.");
 
