@@ -10,6 +10,7 @@ using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using System.Reflection;
 using System.Text;
 using Web.Application.DTOs.EmailDTO;
+using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.Interfaces;
 using Web.Application.Mapping;
 using Web.Domain.Entites;
@@ -96,7 +97,12 @@ namespace Web.APIs
             builder.Services.AddMemoryCache();
             builder.Services
                 .AddFluentValidationAutoValidation()
-                .AddValidatorsFromAssembly(Assembly.Load("Web.Application"));
+                .AddValidatorsFromAssemblies(new[]
+                {
+        Assembly.GetExecutingAssembly(),           // Current Web.APIs
+        typeof(PetRequest).Assembly,               // Web.Application  
+        typeof(AppDbContext).Assembly              // Web.Infrastructure
+                });
 
 
             builder.Services.AddSwaggerGen(c =>
