@@ -32,12 +32,34 @@ namespace Web.Infrastructure.Service
 
             if (request == null)
                 return new BaseResponse<PetResponse>(false, "Request is required.");
+            PetResponse response = default;
 
+            if (request.petType == Domain.Enums.PetType.cat)
+            {
+                response = await add_different_type<Pet_Cat>(request, userId, cancellationToken);
+            }else if(request.petType == Domain.Enums.PetType.dog)
+            {
+                response = await add_different_type<Pet_Dog>(request, userId, cancellationToken);
+
+            }
+
+
+
+
+
+            return new BaseResponse<PetResponse>(true, "Created successfully.", response);
+        }
+
+
+
+        private async Task<PetResponse> add_different_type<TEntity>(PetRequest request, string userId, CancellationToken cancellationToken = default)
+        {
             var petExists = await _context.Set<T>()
                 .AnyAsync(p => p.AppUserId == userId && p.Name == request.Name, cancellationToken);
 
-            if (petExists)
-                return new BaseResponse<PetResponse>(false, $"Another {request.Name} with the same name already exists.");
+
+            //if (petExists)
+            //    return new BaseResponse<PetResponse>(false, $"Another {request.Name} with the same name already exists.");
 
             var entity = request.Adapt<T>();
             entity.AppUserId = userId;
@@ -47,11 +69,10 @@ namespace Web.Infrastructure.Service
 
             await _context.Set<T>().AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-
             var response = entity.Adapt<PetResponse>();
-            return new BaseResponse<PetResponse>(true, "Created successfully.", response);
-        }
 
+            return response;
+        }
         public async Task<BaseResponse<IEnumerable<PetResponse>>> GetAllAsync(string userId, CancellationToken cancellationToken = default)
         {
             var items = await _context.Set<T>()
