@@ -9,6 +9,7 @@ namespace PetCare.Api.Entities
 
     public abstract class Pet : BaseModel
     {
+        public Pet() { }
        
             [Required]
             [MaxLength(100)]
