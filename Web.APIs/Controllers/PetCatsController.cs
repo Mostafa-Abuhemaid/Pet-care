@@ -9,14 +9,14 @@ using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.Interfaces;
 using Web.Infrastructure.Service;
 
-[ApiController]
-[Route("api/[controller]")]
-[Authorize]
-public class PetCatsController : BasePetController<Pet_Cat>
-{
-    public PetCatsController(BasePetService<Pet_Cat> service, IValidator<PetRequest> validator)
-        : base(service)
-    {
-    }
-}
+//[ApiController]
+//[Route("api/[controller]")]
+//[Authorize]
+//public class PetController : BasePetController<Pet_Cat>
+//{
+//    public PetController(BasePetService<Pet_Cat> service, IValidator<PetRequest> validator)
+//        : base(service)
+//    {
+//    }
+//}
 

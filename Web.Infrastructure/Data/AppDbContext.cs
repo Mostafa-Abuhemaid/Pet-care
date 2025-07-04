@@ -18,6 +18,8 @@ namespace Web.Infrastructure.Data
 
         }
         public DbSet<Pet_Cat> Pet_Cats { get; set; }
+        public DbSet<Pet_Dog> Pet_Dogs { get; set; }
+
         public DbSet<Cat_Data> Cat_Data { get; set; }
         //public DbSet<PetOwner> PetOwners { get; set; }
         public DbSet<BreedingRequest> BreedingRequests { get; set; }
@@ -30,6 +32,8 @@ namespace Web.Infrastructure.Data
             // Configure TPC inheritance
             modelBuilder.Entity<Pet>().UseTpcMappingStrategy();
             modelBuilder.Entity<Pet_Cat>().ToTable("Pet_Cats");
+            modelBuilder.Entity<Pet_Dog>().ToTable("Pet_Dogs");
+
             base.OnModelCreating(modelBuilder); // Important for Identity
             modelBuilder.Entity<BreedingRequest>()
                 .HasOne(br => br.RequesterPet)
