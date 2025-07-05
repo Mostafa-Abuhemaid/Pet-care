@@ -22,11 +22,13 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
                 .WithMessage("Breed is required.");
 
             RuleFor(x => x.Gender)
-                .NotEmpty().WithMessage("Gender is required.")
-                .Must(g => g == "Male" || g == "Female")
-                .WithMessage("Gender must be either 'Male' or 'Female'.");
+        .NotEmpty().WithMessage("Gender is required.")
+        .Must(g => string.Equals(g, "Male", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(g, "Female", StringComparison.OrdinalIgnoreCase))
+        .WithMessage("Gender must be either 'Male' or 'Female'.");
 
-                RuleFor(x => x.Photo)
+
+            RuleFor(x => x.Photo)
                     .NotNull()
                     .WithMessage("Photo is required.");
 
@@ -54,13 +56,13 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
                 .GreaterThanOrEqualTo(0).WithMessage("Weight must be greater than or equal to 0.")
                 .LessThanOrEqualTo(500).WithMessage("Weight must not exceed 500 kg.");
 
-       //     RuleFor(x => x.BirthDay)
-       //.NotEmpty().WithMessage("BirthDay is required.")
-       //.Must(birthDay => birthDay != default(DateOnly)).WithMessage("BirthDay is required.")
-       //.Must(birthDay => birthDay <= DateOnly.FromDateTime(DateTime.Today))
-       //.WithMessage("BirthDay cannot be in the future.")
-       //.Must(birthDay => birthDay > DateOnly.FromDateTime(DateTime.Today.AddYears(-30)))
-       //.WithMessage("BirthDay is too old, please enter a valid age.");
+            RuleFor(x => x.BirthDay)
+       .NotEmpty().WithMessage("BirthDay is required.")
+       .Must(birthDay => birthDay != default(DateOnly)).WithMessage("BirthDay is required.")
+       .Must(birthDay => birthDay <= DateOnly.FromDateTime(DateTime.Today))
+       .WithMessage("BirthDay cannot be in the future.")
+       .Must(birthDay => birthDay > DateOnly.FromDateTime(DateTime.Today.AddYears(-30)))
+       .WithMessage("BirthDay is too old, please enter a valid age.");
 
             RuleFor(x => x.MedicalCondidtions)
                 .MaximumLength(1000).WithMessage("Medical Conditions must not exceed 1000 characters.");

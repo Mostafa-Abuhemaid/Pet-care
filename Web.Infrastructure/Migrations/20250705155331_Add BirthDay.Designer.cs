@@ -12,8 +12,8 @@ using Web.Infrastructure.Data;
 namespace Web.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250630210931_Update2 columns PET")]
-    partial class Update2columnsPET
+    [Migration("20250705155331_Add BirthDay")]
+    partial class AddBirthDay
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -379,6 +379,9 @@ namespace Web.Infrastructure.Migrations
                     b.Property<int>("Weight")
                         .HasColumnType("int");
 
+                    b.Property<int>("petType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
@@ -557,6 +560,13 @@ namespace Web.Infrastructure.Migrations
                     b.HasBaseType("PetCare.Api.Entities.Pet");
 
                     b.ToTable("Pet_Cats", (string)null);
+                });
+
+            modelBuilder.Entity("PetCare.Api.Entities.Pet_Dog", b =>
+                {
+                    b.HasBaseType("PetCare.Api.Entities.Pet");
+
+                    b.ToTable("Pet_Dogs", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

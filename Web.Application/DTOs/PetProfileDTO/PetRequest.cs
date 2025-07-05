@@ -12,7 +12,7 @@ namespace Web.Application.DTOs.PetProfileDTO
     (
        string Name ,
        string Breed ,
-      // DateOnly BirthDay,
+       DateOnly BirthDay,
         string Color,
          int Weight,
        string Gender ,
