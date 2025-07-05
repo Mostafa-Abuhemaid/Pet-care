@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Application.DTOs.PetProfileDTO;
+using Web.Application.Interfaces;
 using Web.Domain.Enums;
 using Web.Infrastructure.Data;
 

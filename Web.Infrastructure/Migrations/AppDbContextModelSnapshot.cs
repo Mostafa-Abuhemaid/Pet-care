@@ -376,6 +376,9 @@ namespace Web.Infrastructure.Migrations
                     b.Property<int>("Weight")
                         .HasColumnType("int");
 
+                    b.Property<int>("petType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
@@ -554,6 +557,13 @@ namespace Web.Infrastructure.Migrations
                     b.HasBaseType("PetCare.Api.Entities.Pet");
 
                     b.ToTable("Pet_Cats", (string)null);
+                });
+
+            modelBuilder.Entity("PetCare.Api.Entities.Pet_Dog", b =>
+                {
+                    b.HasBaseType("PetCare.Api.Entities.Pet");
+
+                    b.ToTable("Pet_Dogs", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.Response;
 
-namespace Web.Infrastructure.Service
+namespace Web.Application.Interfaces
 {
     public interface IBasePetService
     {

@@ -19,8 +19,8 @@ namespace PetCare.Api.Entities
             [MaxLength(100)]
             public string Breed { get; set; } = string.Empty;
 
-        //[Required]
-        //public DateOnly BirthDay { get; set; }
+        [Required]
+        public DateOnly BirthDay { get; set; }
 
         [Required]
             [MaxLength(10)]
