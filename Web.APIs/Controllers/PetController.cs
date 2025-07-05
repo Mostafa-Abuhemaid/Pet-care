@@ -7,39 +7,50 @@ using PetCare.Api.Entities;
 using Web.Infrastructure.Service;
 using Web.Domain.Enums;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.RegularExpressions;
+using Azure.Core;
 
 namespace PetCare.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public  class BasePetController<T> : ControllerBase where T :  Pet, new()
+    public  class PetController : ControllerBase 
+        
     {
-        private readonly BasePetService<T> _service;
+      //  private  BasePetService<T> _service;
+        private readonly PetServiceFactory _factory;
 
-        public BasePetController(BasePetService<T> service)
+        public PetController(PetServiceFactory factory)
         {
-            _service = service;
+            _factory = factory;
         }
+       
 
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] PetRequest request, CancellationToken cancellationToken)
         {
+
+            var _service = _factory.Create(request.petType);
+
             var result = await _service.AddAsync(request,User.GetUserId(), cancellationToken);
             return StatusCode(result.Success ? 200 : 400, result);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllBtType([FromQuery] PetType petType, CancellationToken cancellationToken)
         {
+            var _service = _factory.Create(petType);
+
             var result = await _service.GetAllAsync(User.GetUserId(), cancellationToken);
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(int id, [FromQuery] PetType petType, CancellationToken cancellationToken)
         {
+            var _service = _factory.Create(petType);
+
             var result = await _service.GetAsync(id, User.GetUserId(), cancellationToken);
             return StatusCode(result.Success ? 200 : 404, result);
         }
@@ -47,13 +58,17 @@ namespace PetCare.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] PetRequest request, CancellationToken cancellationToken)
         {
+            var _service = _factory.Create(request.petType);
+
             var result = await _service.UpdateAsync(id, request, User.GetUserId(), cancellationToken);
             return StatusCode(result.Success ? 200 : 404, result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Delete(int id, [FromQuery] PetType petType, CancellationToken cancellationToken)
         {
+            var _service = _factory.Create(petType);
+
             var result = await _service.DeleteAsync(id, User.GetUserId(), cancellationToken);
             return StatusCode(result.Success ? 200 : 404, result);
         }

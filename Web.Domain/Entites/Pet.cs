@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Web.Domain.Entites;
+using Web.Domain.Enums;
 
 namespace PetCare.Api.Entities
 {
@@ -8,6 +9,7 @@ namespace PetCare.Api.Entities
 
     public abstract class Pet : BaseModel
     {
+        public Pet() { }
        
             [Required]
             [MaxLength(100)]
@@ -17,8 +19,8 @@ namespace PetCare.Api.Entities
             [MaxLength(100)]
             public string Breed { get; set; } = string.Empty;
 
-        [Required]
-        public DateOnly BirthDay { get; set; }
+        //[Required]
+        //public DateOnly BirthDay { get; set; }
 
         [Required]
             [MaxLength(10)]
@@ -41,7 +43,8 @@ namespace PetCare.Api.Entities
         [Required]
             [ForeignKey("AppUser")]
             public string AppUserId { get; set; } = string.Empty;
-
+        [Required]
+        public PetType petType { get; set; }
         public AppUser AppUser { get; set; } = default!;
 
             public bool IsInBreedingPeriod { get; set; }
