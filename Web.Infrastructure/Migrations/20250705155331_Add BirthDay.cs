@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Web.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class AddBirthDay : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -85,6 +85,12 @@ namespace Web.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Breed = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    MaleAverageWeight = table.Column<double>(type: "float", nullable: false),
+                    MaleAverageSize = table.Column<double>(type: "float", nullable: false),
+                    MaleTemperament = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FemaleAverageWeight = table.Column<double>(type: "float", nullable: false),
+                    FemaleAverageSize = table.Column<double>(type: "float", nullable: false),
+                    FemaleTemperament = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Physical_Characteristics = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Energy_Level = table.Column<int>(type: "int", nullable: false),
                     Good_With = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
@@ -240,12 +246,15 @@ namespace Web.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false, defaultValueSql: "NEXT VALUE FOR [PetSequence]"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Breed = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
+                    BirthDay = table.Column<DateOnly>(type: "date", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    MedicalCondidtions = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     PhotoUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    petType = table.Column<int>(type: "int", nullable: false),
                     IsInBreedingPeriod = table.Column<bool>(type: "bit", nullable: false),
-                    Cat_DataId = table.Column<int>(type: "int", nullable: false),
                     Createdon = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedByid = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
@@ -260,10 +269,36 @@ namespace Web.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pet_Dogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false, defaultValueSql: "NEXT VALUE FOR [PetSequence]"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Breed = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    BirthDay = table.Column<DateOnly>(type: "date", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    MedicalCondidtions = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    PhotoUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    petType = table.Column<int>(type: "int", nullable: false),
+                    IsInBreedingPeriod = table.Column<bool>(type: "bit", nullable: false),
+                    Createdon = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
+                    UpdatedByid = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    Updatedon = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pet_Dogs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pet_Cats_Cat_Data_Cat_DataId",
-                        column: x => x.Cat_DataId,
-                        principalTable: "Cat_Data",
+                        name: "FK_Pet_Dogs_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -356,9 +391,9 @@ namespace Web.Infrastructure.Migrations
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pet_Cats_Cat_DataId",
-                table: "Pet_Cats",
-                column: "Cat_DataId");
+                name: "IX_Pet_Dogs_AppUserId",
+                table: "Pet_Dogs",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VetReviews_AppUserId",
@@ -393,16 +428,19 @@ namespace Web.Infrastructure.Migrations
                 name: "BreedingRequests");
 
             migrationBuilder.DropTable(
+                name: "Cat_Data");
+
+            migrationBuilder.DropTable(
                 name: "Pet_Cats");
+
+            migrationBuilder.DropTable(
+                name: "Pet_Dogs");
 
             migrationBuilder.DropTable(
                 name: "VetReviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Cat_Data");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
