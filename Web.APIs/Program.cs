@@ -88,6 +88,7 @@ namespace Web.APIs
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped(typeof(BasePetService<>));
+            builder.Services.AddScoped<PetServiceFactory>(); 
 
             // Mapping Configuration
             builder.Services.AddAutoMapper(typeof(MappingProfile));
