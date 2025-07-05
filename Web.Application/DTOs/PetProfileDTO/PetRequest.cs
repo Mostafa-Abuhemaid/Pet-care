@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Domain.Enums;
 
 namespace Web.Application.DTOs.PetProfileDTO
 {
@@ -11,12 +12,14 @@ namespace Web.Application.DTOs.PetProfileDTO
     (
        string Name ,
        string Breed ,
-       DateOnly BirthDay,
+      // DateOnly BirthDay,
         string Color,
          int Weight,
        string Gender ,
         string MedicalCondidtions,
          bool? IsInBreedingPeriod,
-             IFormFile? Photo 
+             IFormFile? Photo ,
+                             PetType petType
+
     );
 }
