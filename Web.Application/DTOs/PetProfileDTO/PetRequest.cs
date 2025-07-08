@@ -19,7 +19,7 @@ namespace Web.Application.DTOs.PetProfileDTO
         string MedicalCondidtions,
          bool? IsInBreedingPeriod,
              IFormFile? Photo ,
-                             PetType petType
+                  PetType petType
 
     );
 }
