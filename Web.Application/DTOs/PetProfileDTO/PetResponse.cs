@@ -12,9 +12,9 @@ namespace Web.Application.DTOs.PetProfileDTO
        string Breed,
         DateOnly BirthDay,
         string Color,
-         int Weight,
+         Double Weight,
        string Gender,
-        string MedicalCondidtions,
+        string MedicalConditions,
          bool IsInBreedingPeriod,
      string PhotoUrl
 
