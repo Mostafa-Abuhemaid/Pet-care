@@ -74,6 +74,8 @@ namespace Web.Infrastructure.Service
                 return new BaseResponse<PetResponse>(false, $"Pet with ID {id} was not found for this user.");
 
             var response = item.Adapt<PetResponse>();
+            var path=response.PhotoUrl;
+          
             return new BaseResponse<PetResponse>(true, "Pet retrieved successfully.", response);
         }
 

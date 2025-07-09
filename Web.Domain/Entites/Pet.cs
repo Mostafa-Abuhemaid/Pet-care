@@ -31,10 +31,10 @@ namespace PetCare.Api.Entities
             public string Color { get; set; }=string.Empty;
 
         [Required]
-        public int Weight { get; set; }
+        public double Weight { get; set; }
         [Required]
         [MaxLength(1000)]
-        public string MedicalCondidtions { get; set; } = string.Empty;
+        public string MedicalConditions { get; set; } = string.Empty;
 
              [Url]
             [MaxLength(255)]
