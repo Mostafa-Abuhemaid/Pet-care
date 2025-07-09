@@ -22,7 +22,7 @@ namespace PetCare.Api.Entities
         [Required]
         public DateOnly BirthDay { get; set; }
 
-        [Required]
+            [Required]
             [MaxLength(10)]
             public string Gender { get; set; } = string.Empty;
 
@@ -47,7 +47,7 @@ namespace PetCare.Api.Entities
         public PetType petType { get; set; }
         public AppUser AppUser { get; set; } = default!;
 
-            public bool IsInBreedingPeriod { get; set; }
+         public BreedingRequestStatus breedingRequestStatus { get; set; }
         }
 
 }

@@ -67,6 +67,12 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
             RuleFor(x => x.MedicalConditions)
                 .MaximumLength(1000).WithMessage("Medical Conditions must not exceed 1000 characters.");
 
+            RuleFor(x => x.breedingRequestStatus)
+            .NotEmpty()
+            .WithMessage("BreedingStatus is required please choise Intact or Neutered.")
+        .Must(g => string.Equals(g, "Intact", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(g, "Neutered", StringComparison.OrdinalIgnoreCase))
+        .WithMessage("BreedingStatus must be either 'Neutered' or 'Neutered'.");
 
 
         }

@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Domain.Enums;
 
 namespace Web.Application.DTOs.PetProfileDTO
 {
     public record PetResponse(
             int Id,
-        string Name,
-       string Breed,
+          string Name,
+          string Breed,
         DateOnly BirthDay,
         string Color,
          Double Weight,
-       string Gender,
+         string Gender,
         string MedicalConditions,
-         bool IsInBreedingPeriod,
-     string PhotoUrl
+        string breedingRequestStatus,
+         string PhotoUrl
 
         );
 }
