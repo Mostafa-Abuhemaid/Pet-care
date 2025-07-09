@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -90,9 +91,16 @@ namespace Web.APIs
             builder.Services.AddScoped(typeof(BasePetService<>));
             builder.Services.AddScoped<PetServiceFactory>(); 
 
-            // Mapping Configuration
+            // Mapping Configuration ==> AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
-            builder.Services.AddMapster();
+            //////////////////Mapster//////////
+            // قراءة BaseURL من appsettings.json
+            var baseUrl = builder.Configuration["BaseURL"];
+            //  Mapster
+            var mappingConfig = TypeAdapterConfig.GlobalSettings;
+            // Configurations with BaseURL
+            MapsterConfiguration.RegisterMappings(mappingConfig, baseUrl);
+            builder.Services.AddSingleton<IMapper>(new Mapper(mappingConfig));
 
             // Cache and Validation
             builder.Services.AddMemoryCache();
