@@ -14,7 +14,7 @@ namespace Web.Application.DTOs.PetProfileDTO
         string Color,
          int Weight,
        string Gender,
-        string MedicalCondidtions,
+        string MedicalConditions,
          bool IsInBreedingPeriod,
      string PhotoUrl
 

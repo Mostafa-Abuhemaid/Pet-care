@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PetCare.Api.Entities;
 using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.Files;
@@ -14,11 +15,13 @@ namespace Web.Infrastructure.Service
     {
         private readonly AppDbContext _context;
         private readonly IValidator<PetRequest> _validator;
+        private readonly IConfiguration _configuration;
 
-        public BasePetService(AppDbContext context,IValidator<PetRequest>validator)
+        public BasePetService(AppDbContext context, IValidator<PetRequest> validator, IConfiguration configuration)
         {
             _context = context;
             _validator = validator;
+            _configuration = configuration;
         }
 
 
@@ -51,6 +54,11 @@ namespace Web.Infrastructure.Service
             await _context.SaveChangesAsync(cancellationToken);
 
             var response = entity.Adapt<PetResponse>();
+            
+            response = response with
+            {
+                PhotoUrl = $"{_configuration["BaseURL"]}/Pet/{response.PhotoUrl}"
+            };
             return new BaseResponse<PetResponse>(true, "Created successfully.", response);
         }
         public async Task<BaseResponse<IEnumerable<PetResponse>>> GetAllAsync(string userId, CancellationToken cancellationToken = default)
@@ -74,6 +82,11 @@ namespace Web.Infrastructure.Service
                 return new BaseResponse<PetResponse>(false, $"Pet with ID {id} was not found for this user.");
 
             var response = item.Adapt<PetResponse>();
+            response = response with
+            {
+                PhotoUrl = $"{_configuration["BaseURL"]}/Pet/{response.PhotoUrl}"
+            };
+
             return new BaseResponse<PetResponse>(true, "Pet retrieved successfully.", response);
         }
 

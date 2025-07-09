@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using PetCare.Api.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,12 @@ namespace Web.Infrastructure.Service
     {
         private readonly AppDbContext _context;
         private readonly IValidator<PetRequest> _validator;
-        public PetServiceFactory(AppDbContext context, IValidator<PetRequest> validator)
+        private readonly IConfiguration _configuration;
+        public PetServiceFactory(AppDbContext context, IValidator<PetRequest> validator, IConfiguration configuration)
         {
             _context = context;
             _validator = validator;
+            _configuration = configuration;
         }
         public IBasePetService Create(PetType petType)
         {
@@ -28,8 +31,8 @@ namespace Web.Infrastructure.Service
         
             return petType switch
             {
-                PetType.cat => new BasePetService<Pet_Cat>(_context, _validator),
-                PetType.dog => new BasePetService<Pet_Dog>(_context, _validator),
+                PetType.cat => new BasePetService<Pet_Cat>(_context, _validator, _configuration),
+                PetType.dog => new BasePetService<Pet_Dog>(_context, _validator, _configuration),
                 _ => throw new NotImplementedException()
             };
         }
