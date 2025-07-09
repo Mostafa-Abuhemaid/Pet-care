@@ -64,7 +64,7 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
        .Must(birthDay => birthDay > DateOnly.FromDateTime(DateTime.Today.AddYears(-30)))
        .WithMessage("BirthDay is too old, please enter a valid age.");
 
-            RuleFor(x => x.MedicalCondidtions)
+            RuleFor(x => x.MedicalConditions)
                 .MaximumLength(1000).WithMessage("Medical Conditions must not exceed 1000 characters.");
 
 
