@@ -21,8 +21,7 @@ namespace Web.Application.Files
             using var fileStream = new FileStream(filePath, FileMode.Create);
             file.CopyTo(fileStream);
             // return file name
-            //return fileName;
-            return filePath;
+            return fileName;
 
         }
         public static void DeleteFile(string fileName, string folderName)

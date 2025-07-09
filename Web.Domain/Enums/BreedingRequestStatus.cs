@@ -10,8 +10,8 @@ namespace Web.Domain.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum BreedingRequestStatus
     {
-        Pending,
-        Accepted,
-        Rejected
+        Intact=1,
+        Neutered=0
+
     }
 }
