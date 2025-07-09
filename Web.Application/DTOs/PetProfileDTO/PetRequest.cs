@@ -14,9 +14,9 @@ namespace Web.Application.DTOs.PetProfileDTO
        string Breed ,
        DateOnly BirthDay,
         string Color,
-         int Weight,
+         double Weight,
        string Gender ,
-        string MedicalCondidtions,
+        string MedicalConditions,
          bool? IsInBreedingPeriod,
              IFormFile? Photo ,
                   PetType petType
