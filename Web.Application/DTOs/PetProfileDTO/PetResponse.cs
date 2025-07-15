@@ -16,7 +16,7 @@ namespace Web.Application.DTOs.PetProfileDTO
          Double Weight,
          string Gender,
         string MedicalConditions,
-        string breedingRequestStatus,
+        string ?breedingRequestStatus,
          string PhotoUrl
 
         );
