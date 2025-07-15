@@ -27,12 +27,6 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
                 || string.Equals(g, "Female", StringComparison.OrdinalIgnoreCase))
         .WithMessage("Gender must be either 'Male' or 'Female'.");
 
-
-            RuleFor(x => x.Photo)
-                    .NotNull()
-                    .WithMessage("Photo is required.");
-
-
             RuleFor(x => x.Photo)
                 .Must(file =>
                 {
@@ -65,14 +59,15 @@ namespace Web.Application.DTOs.PetProfileDTO.Validators
        .WithMessage("BirthDay is too old, please enter a valid age.");
 
             RuleFor(x => x.MedicalConditions)
-                .MaximumLength(1000).WithMessage("Medical Conditions must not exceed 1000 characters.");
+                .MaximumLength(1000)
+                .WithMessage("Medical Conditions must not exceed 1000 characters.");
 
             RuleFor(x => x.breedingRequestStatus)
             .NotEmpty()
             .WithMessage("BreedingStatus is required please choise Intact or Neutered.")
         .Must(g => string.Equals(g, "Intact", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(g, "Neutered", StringComparison.OrdinalIgnoreCase))
-        .WithMessage("BreedingStatus must be either 'Neutered' or 'Neutered'.");
+        .WithMessage("BreedingStatus must be either 'Intact' or 'Neutered'.");
 
 
         }
