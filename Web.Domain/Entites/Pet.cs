@@ -32,13 +32,12 @@ namespace PetCare.Api.Entities
 
         [Required]
         public double Weight { get; set; }
-        [Required]
         [MaxLength(1000)]
-        public string MedicalConditions { get; set; } = string.Empty;
+        public string ?MedicalConditions { get; set; } = string.Empty;
 
              [Url]
             [MaxLength(255)]
-            public string PhotoUrl { get; set; } = string.Empty;
+            public string ?PhotoUrl { get; set; } = string.Empty;
 
         [Required]
             [ForeignKey("AppUser")]
@@ -47,7 +46,7 @@ namespace PetCare.Api.Entities
         public PetType petType { get; set; }
         public AppUser AppUser { get; set; } = default!;
 
-         public BreedingRequestStatus breedingRequestStatus { get; set; }
+         public string breedingRequestStatus { get; set; }
         }
 
 }
