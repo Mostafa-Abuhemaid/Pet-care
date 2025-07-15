@@ -16,7 +16,7 @@ namespace Web.Application.DTOs.PetProfileDTO
         string Color,
          double Weight,
        string Gender ,
-        string MedicalConditions,
+        string ?MedicalConditions,
          string breedingRequestStatus,
              IFormFile? Photo ,
                   PetType petType
