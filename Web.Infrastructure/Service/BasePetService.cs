@@ -56,10 +56,6 @@ namespace Web.Infrastructure.Service
 
             var response = entity.Adapt<PetResponse>();
             
-            response = response with
-            {
-                PhotoUrl = $"{_configuration["BaseURL"]}/Pet/{response.PhotoUrl}"
-            };
             return new BaseResponse<PetResponse>(true, "Created successfully.", response);
         }
         public async Task<BaseResponse<IEnumerable<PetResponse>>> GetAllAsync(string userId, CancellationToken cancellationToken = default)
