@@ -1,6 +1,7 @@
 ﻿using Azure;
 using FluentValidation;
 using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PetCare.Api.Entities;
@@ -28,34 +29,18 @@ namespace Web.Infrastructure.Service
 
         public async Task<BaseResponse<PetResponse>> AddAsync(PetRequest request, string userId, CancellationToken cancellationToken = default)
         {
-            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
-            if (!validationResult.IsValid)
-            {
-                var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
-                return new BaseResponse<PetResponse>(false, $"Validation failed:{errors}");
-            }
-
-            if (request == null)
-                return new BaseResponse<PetResponse>(false, "Request is required.");
-
-            var petExists = await _context.Set<T>()
-                .AnyAsync(p => p.AppUserId == userId && p.Name == request.Name, cancellationToken);
-
-            if (petExists)
+            if( await _context.Set<T>().AnyAsync(p => p.AppUserId == userId && p.Name == request.Name, cancellationToken))
                 return new BaseResponse<PetResponse>(false, $"Another {request.Name} with the same name already exists.");
 
             var entity = request.Adapt<T>();
             entity.AppUserId = userId;
-
             if (request.Photo != null)
                 entity.PhotoUrl = Files.UploadFile(request.Photo, "Pet");
-
             await _context.Set<T>().AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
             var response = entity.Adapt<PetResponse>();
-            
             return new BaseResponse<PetResponse>(true, "Created successfully.", response);
         }
         public async Task<BaseResponse<IEnumerable<PetResponse>>> GetAllAsync(string userId, CancellationToken cancellationToken = default)
@@ -85,35 +70,31 @@ namespace Web.Infrastructure.Service
 
         public async Task<BaseResponse<bool>> UpdateAsync(int id, PetRequest request, string userId, CancellationToken cancellationToken = default)
         {
-            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-            {
-                var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
-                return new BaseResponse<bool>(false, $"Validation failed: {errors}");
-            }
-
-            if (request == null)
-                return new BaseResponse<bool>(false, "Request is required.");
-
-            var item = await _context.Set<T>()
-                .FirstOrDefaultAsync(x => x.Id == id && x.AppUserId == userId, cancellationToken);
-
-            if (item == null)
+            if (await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id && x.AppUserId == userId, cancellationToken) is not { } item)
                 return new BaseResponse<bool>(false, $"Pet with ID {id} was not found for this user.");
 
-            var anotherPetWithSameName = await _context.Set<T>()
-    .AnyAsync(p => p.Id != id && p.AppUserId == userId && p.Name == request.Name, cancellationToken);
-
-            if (anotherPetWithSameName)
+            if (await _context.Set<T>().AnyAsync(p => p.Id != id && p.AppUserId == userId && p.Name == request.Name, cancellationToken))
                 return new BaseResponse<bool>(false, "Another pet with the same name already exists.");
-
-            request.Adapt(item);
-
+            string newPhotoUrl = item.PhotoUrl!; 
             if (request.Photo != null)
-                item.PhotoUrl = Files.UploadFile(request.Photo, "Pet");
+            { 
+                newPhotoUrl = Files.UploadFile(request.Photo, "Pet");
+            if (!string.IsNullOrEmpty(item.PhotoUrl))
+                Files.DeleteFile(item.PhotoUrl, "Pet");
+             }
 
-            await _context.SaveChangesAsync(cancellationToken);
+                await _context.Set<T>().Where(x => x.Id == id && x.AppUserId == userId)
+      .ExecuteUpdateAsync(setters =>
+            setters.SetProperty(x => x.Name, request.Name)
+                   .SetProperty(x => x.Breed, request.Breed)
+                   .SetProperty(x => x.BirthDay, request.BirthDay)
+                   .SetProperty(x => x.breedingRequestStatus, request.breedingRequestStatus)
+                   .SetProperty(x => x.Gender, request.Gender)
+                   .SetProperty(x => x.Color, request.Color)
+                   .SetProperty(x => x.Weight, request.Weight)
+                   .SetProperty(x => x.MedicalConditions, request.MedicalConditions)
+                   .SetProperty(x => x.PhotoUrl, newPhotoUrl),
+            cancellationToken);
             return new BaseResponse<bool>(true, "Updated successfully.", true);
         }
 
@@ -131,6 +112,5 @@ namespace Web.Infrastructure.Service
             return new BaseResponse<bool>(true, "Deleted successfully.", true);
         }
 
-       
     }
 }
