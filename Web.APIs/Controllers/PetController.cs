@@ -37,7 +37,7 @@ namespace PetCare.Api.Controllers
             return StatusCode(result.Success ? 200 : 400, result);
         }
 
-        [HttpGet]
+        [HttpGet("Pets")]
         public async Task<IActionResult> GetAllBtType([FromQuery] PetType petType, CancellationToken cancellationToken)
         {
             var _service = _factory.Create(petType);
