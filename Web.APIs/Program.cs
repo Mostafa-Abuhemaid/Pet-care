@@ -15,7 +15,7 @@ using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.Interfaces;
 using Web.Application.Mapping;
 using Web.Domain.Entites;
-using Web.Infrastructure.Data;
+using Web.Infrastructure.Persistence.Data;
 using Web.Infrastructure.Service;
 
 namespace Web.APIs

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.Interfaces;
 using Web.Domain.Enums;
-using Web.Infrastructure.Data;
+using Web.Infrastructure.Persistence.Data;
 
 namespace Web.Infrastructure.Service
 {

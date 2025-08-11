@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Web.Infrastructure.Data;
+using Web.Infrastructure.Persistence.Data;
 
 #nullable disable
 
 namespace Web.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250709135832_update Weight")]
-    partial class updateWeight
+    [Migration("20250705155331_Add BirthDay")]
+    partial class AddBirthDay
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -354,7 +354,7 @@ namespace Web.Infrastructure.Migrations
                     b.Property<bool>("IsInBreedingPeriod")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MedicalConditions")
+                    b.Property<string>("MedicalCondidtions")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
@@ -376,8 +376,8 @@ namespace Web.Infrastructure.Migrations
                     b.Property<DateTime?>("Updatedon")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Weight")
-                        .HasColumnType("float");
+                    b.Property<int>("Weight")
+                        .HasColumnType("int");
 
                     b.Property<int>("petType")
                         .HasColumnType("int");
