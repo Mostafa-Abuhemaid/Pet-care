@@ -14,6 +14,7 @@ namespace Web.Domain.Entites
         public string FullName { get; set; }=string.Empty;
         public Gender gender {  get; set; }
 
-        public ICollection<Pet> Pets { get; set; } // Ahmed Elsaadany
+        public ICollection<Pet> Pets { get; set; } =[];
+        public ICollection<Cart> Carts { get; set; }=[];
     }
 }
