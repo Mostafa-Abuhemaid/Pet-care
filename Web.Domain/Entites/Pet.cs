@@ -39,7 +39,7 @@ namespace PetCare.Api.Entities
             [MaxLength(255)]
             public string ?PhotoUrl { get; set; } = string.Empty;
 
-        [Required]
+             [Required]
             [ForeignKey("AppUser")]
             public string AppUserId { get; set; } = string.Empty;
         [Required]
