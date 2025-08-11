@@ -1,0 +1,34 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Web.Domain.Entites;
+
+namespace Web.Infrastructure.Persistence.Configurations
+{
+    public class ProductConfiguration : BaseConfiguration<Product>
+    {
+        public override void Configure(EntityTypeBuilder<Product> builder)
+        {
+            base.Configure(builder); // يطبّق القواعد المشتركة من BaseConfiguration
+
+            builder.Property(x => x.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            builder.Property(x => x.Price)
+                .IsRequired();
+
+            builder.HasOne(x => x.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(x => x.CategoryId);
+
+            builder.HasIndex(x => x.Price);
+            builder.HasIndex(x => x.Name);
+        }
+    }
+
+}
