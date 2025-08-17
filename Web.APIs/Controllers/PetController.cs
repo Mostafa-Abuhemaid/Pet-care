@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PetCare.Api.Entities;
+using System.Diagnostics.Eventing.Reader;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
+using Web.Application.Common;
 using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.Response;
-using PetCare.Api.Entities;
-using Web.Infrastructure.Service;
 using Web.Domain.Enums;
-using FluentValidation;
-using System.Text.RegularExpressions;
-using Azure.Core;
+using Web.Infrastructure.Service;
 
 namespace PetCare.Api.Controllers
 {
@@ -70,6 +72,15 @@ namespace PetCare.Api.Controllers
             var _service = _factory.Create(petType);
 
             var result = await _service.DeleteAsync(id, User.GetUserId(), cancellationToken);
+            return StatusCode(result.Success ? 200 : 404, result);
+        }
+
+        [HttpGet("Avaliable_Pets_Mating")]
+        public async Task<IActionResult> AvaliableMating([FromQuery]RequestFilters filters,CancellationToken cancellationToken)
+        {
+            var _service = _factory.Create(0);
+
+            var result = await _service.AvaliableMatingAsync(filters, cancellationToken);
             return StatusCode(result.Success ? 200 : 404, result);
         }
     }
