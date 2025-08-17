@@ -5,10 +5,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PetCare.Api.Entities;
+using Web.Application.Common;
+using Web.Application.Common.Constants;
 using Web.Application.DTOs.PetProfileDTO;
+using Web.Application.DTOs.ProductDTO;
 using Web.Application.Files;
 using Web.Application.Interfaces;
 using Web.Application.Response;
+using Web.Domain.Entites;
 using Web.Infrastructure.Persistence.Data;
 
 namespace Web.Infrastructure.Service
@@ -110,6 +114,40 @@ namespace Web.Infrastructure.Service
             await _context.SaveChangesAsync(cancellationToken);
 
             return new BaseResponse<bool>(true, "Deleted successfully.", true);
+        }
+
+        public async Task<BaseResponse<PaginatedList<PetMatingResponse>>> AvaliableMatingAsync(
+            RequestFilters filters,
+            CancellationToken cancellationToken = default)
+        {
+            var skip = (filters.PageNumber - 1) * filters.PageSize;
+
+            var allPetsQuery =_context.Pet_Dogs
+                .Where(d => d.breedingRequestStatus == "intact")
+                .Select(d => new { d.Id, d.Name, d.Gender, d.Breed, d.Color, d.PhotoUrl, Type = "Dog" })
+                .Concat(_context.Pet_Cats
+                    .Where(c => c.breedingRequestStatus == "intact")
+                    .Select(c => new { c.Id, c.Name, c.Gender, c.Breed, c.Color, c.PhotoUrl, Type = "Cat" }))
+                .OrderBy(p => p.Id)
+                .Skip(skip)
+                .Take(filters.PageSize);
+
+            var result = await allPetsQuery
+                .Select(p => new PetMatingResponse(p.Id, p.Name, p.Gender, p.Breed, p.Color, p.PhotoUrl, p.Type))
+                .ToListAsync(cancellationToken);
+
+            var response = new PaginatedList<PetMatingResponse>(
+      result,
+      result.Count,
+      filters.PageNumber,
+      filters.PageSize
+  );
+
+            return new BaseResponse<PaginatedList<PetMatingResponse>>(
+                true,
+                "Pets for mating retrieved successfully.",
+                response
+            );
         }
 
     }
