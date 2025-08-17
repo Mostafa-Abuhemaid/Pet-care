@@ -10,16 +10,18 @@ namespace Web.Application.DTOs.PetProfileDTO
 {
     public record PetRequest
     (
-       string Name ,
-       string Breed ,
+       string Name,
+       string Breed,
        DateOnly BirthDay,
-        string Color,
-         double Weight,
-       string Gender ,
-        string ?MedicalConditions,
-         string breedingRequestStatus,
-             IFormFile? Photo ,
-                  PetType petType
+       string Color,
+       double Weight,
+       double height,
+       string Characteristic,
+       string Gender,
+       string? MedicalConditions,
+       string breedingRequestStatus,
+       IFormFile? Photo,
+       PetType petType
 
     );
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Persistence.Data;
 namespace Web.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250812123120_UpdatePetProfile")]
+    partial class UpdatePetProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -730,9 +733,6 @@ namespace Web.Infrastructure.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<double>("StockQuantity")
-                        .HasColumnType("float");
-
                     b.Property<string>("UpdatedByid")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
@@ -744,51 +744,13 @@ namespace Web.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Deleted");
-
                     b.HasIndex("Name");
 
                     b.HasIndex("Price");
 
-                    b.HasIndex("StockQuantity");
-
                     b.HasIndex("UpdatedByid");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("Web.Domain.Entites.ProductStats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Createdon")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SalesCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdatedByid")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Updatedon")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
-
-                    b.ToTable("ProductStats");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.Pet_Cat", b =>
@@ -946,17 +908,6 @@ namespace Web.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Web.Domain.Entites.ProductStats", b =>
-                {
-                    b.HasOne("Web.Domain.Entites.Product", "Product")
-                        .WithOne("ProductStats")
-                        .HasForeignKey("Web.Domain.Entites.ProductStats", "ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("PetCare.Api.Entities.VetClinic", b =>
                 {
                     b.Navigation("Reviews");
@@ -982,9 +933,6 @@ namespace Web.Infrastructure.Migrations
             modelBuilder.Entity("Web.Domain.Entites.Product", b =>
                 {
                     b.Navigation("CartItems");
-
-                    b.Navigation("ProductStats")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
