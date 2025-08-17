@@ -12,8 +12,11 @@ namespace Web.Domain.Entites
         public string Description { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public int Price { get; set; }
+
+        public double StockQuantity { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; }= default!;
+        public ProductStats ProductStats { get; set; } = default!;
 
         public ICollection<CartItem> CartItems { get; set; } = [];
 
