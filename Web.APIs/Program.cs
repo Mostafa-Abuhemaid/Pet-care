@@ -95,7 +95,7 @@ namespace Web.APIs
             builder.Services.AddScoped<IProductService,ProductService>();
             builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddScoped<ApplicationSeeder>();
-
+            builder.Services.AddScoped<ICacheService, CacheService>();
 
             // Mapping Configuration ==> AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -150,6 +150,9 @@ namespace Web.APIs
         }
     });
             });
+
+            //Add cache
+            builder.Services.AddDistributedMemoryCache();
 
 
             var app = builder.Build();
