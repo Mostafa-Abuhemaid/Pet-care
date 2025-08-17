@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Metrics;
+using System.Reflection.PortableExecutable;
 using Web.Domain.Entites;
 using Web.Domain.Enums;
 
@@ -32,6 +35,11 @@ namespace PetCare.Api.Entities
 
         [Required]
         public double Weight { get; set; }
+
+        [Required]
+        public double height { get; set; } 
+        public string Characteristic { get; set; } = string.Empty ;
+
         [MaxLength(1000)]
         public string ?MedicalConditions { get; set; } = string.Empty;
 
