@@ -12,10 +12,12 @@ using System.Reflection;
 using System.Text;
 using Web.Application.DTOs.EmailDTO;
 using Web.Application.DTOs.PetProfileDTO;
+using Web.Application.Helpers;
 using Web.Application.Interfaces;
 using Web.Application.Mapping;
 using Web.Domain.Entites;
 using Web.Infrastructure.Persistence.Data;
+using Web.Infrastructure.Seeding;
 using Web.Infrastructure.Service;
 
 namespace Web.APIs
@@ -90,6 +92,10 @@ namespace Web.APIs
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped(typeof(BasePetService<>));
             builder.Services.AddScoped<PetServiceFactory>(); 
+            builder.Services.AddScoped<IProductService,ProductService>();
+            builder.Services.AddScoped<DataSeeder>();
+            builder.Services.AddScoped<ApplicationSeeder>();
+
 
             // Mapping Configuration ==> AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -116,7 +122,7 @@ namespace Web.APIs
 
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "YourAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PetPaw", Version = "v1" });
 
                 // إضافة دعم Authorization في Swagger
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -147,6 +153,21 @@ namespace Web.APIs
 
 
             var app = builder.Build();
+
+
+            // ✨ استدعاء الـ seeding هنا
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                // ✅ يضمن إن الـ DB تتعمل لو مش موجودة + يطبق أي Migrations
+                context.Database.Migrate();
+
+                var seeder = scope.ServiceProvider.GetRequiredService<ApplicationSeeder>();
+                seeder.SeedAllAsync().GetAwaiter().GetResult();
+            }
+
+
 
             // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
