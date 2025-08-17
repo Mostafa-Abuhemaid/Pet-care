@@ -1,6 +1,7 @@
 ﻿
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -14,49 +15,78 @@ using Web.Infrastructure.Persistence.Data;
 
 namespace Web.Infrastructure.Service
 {
-    public class ProductService(AppDbContext context) : IProductService
+    public class ProductService(AppDbContext context,ICacheService cacheService) : IProductService
     {
         private readonly AppDbContext _context = context;
-
+        private readonly ICacheService _cacheService = cacheService;
+        private const string _cachePrefix = "availableProducts";
         public async Task<BaseResponse<PaginatedList<ProductResponse>>> GetAllAsync(RequestFilters filters = default!, int? CategoryId = null)
         {
             if (!await _context.categories.AnyAsync(c => c.Id == CategoryId||CategoryId==null))
                 return new BaseResponse<PaginatedList<ProductResponse>>(false, ProductMessages.CategoryNotFound);
 
-            var query =_context.Products.AsQueryable();
+            var cacheKey = $"{_cachePrefix}-AllProducts";
+            var Cachedvalue = await _cacheService.GetAsync<List<ProductResponse>>(cacheKey);
 
-            if (CategoryId is not null)
-                query = query.Where(p => p.CategoryId == CategoryId);
-
-            if (filters != null)
+            PaginatedList<ProductResponse> products =default;
+            if (Cachedvalue is null)
             {
-                if (!string.IsNullOrEmpty(filters.SearchValue))
-                    query = query.Where(p => p.Name.Contains(filters.SearchValue));
+                var query = _context.Products.AsQueryable();
 
-                var (sortColumn, sortDirection) = GetValidatedSortOptions(filters);
-                query = query.OrderBy($"{sortColumn} {sortDirection}");
+                if (CategoryId is not null)
+                    query = query.Where(p => p.CategoryId == CategoryId);
+
+                if (filters != null)
+                {
+                    if (!string.IsNullOrEmpty(filters.SearchValue))
+                        query = query.Where(p => p.Name.Contains(filters.SearchValue));
+
+                    var (sortColumn, sortDirection) = GetValidatedSortOptions(filters);
+                    query = query.OrderBy($"{sortColumn} {sortDirection}");
+
+                }
+                var source = query
+                    .ProjectToType<ProductResponse>()
+                    .AsNoTracking();
+
+                 products = await PaginatedList<ProductResponse>
+                    .CreateAsync(source, filters!.PageNumber, filters.PageSize);
+
+                await _cacheService.SetAsync(cacheKey, products.Items);
+
 
             }
-            var source = query
-                .ProjectToType<ProductResponse>()
-                .AsNoTracking();
-
-            var products=await PaginatedList<ProductResponse>
-                .CreateAsync(source,filters!.PageNumber,filters.PageSize);
+            else
+            {
+                products = new PaginatedList<ProductResponse>(
+                    Cachedvalue, Cachedvalue.Count, filters.PageNumber, filters.PageSize);
+            }
 
             return new BaseResponse<PaginatedList<ProductResponse>>(true, ProductMessages.ProductsRetrieved, products);
         }
         public async Task<BaseResponse<PaginatedList<ProductResponse>>> GetBestSellerProductsAsync(RequestFilters filters = null)
         {
-            var query = _context.Products
+            var cacheKey = $"{_cachePrefix}-BestSellersProducts";
+            var Cachedvalue = await _cacheService.GetAsync<List<ProductResponse>>(cacheKey);
+
+            PaginatedList<ProductResponse> products = default;
+            if (Cachedvalue is null)
+            {
+                var query = _context.Products
                 .Where(p => !p.Deleted && p.StockQuantity > 0)
                 .OrderByDescending(p => p.ProductStats.SalesCount)
                 .ThenByDescending(p => p.StockQuantity)
                 .ThenBy(p => p.Price)
                 .ProjectToType<ProductResponse>()
                 .AsNoTracking();
-            var products = await PaginatedList<ProductResponse>
-                     .CreateAsync(query, filters!.PageNumber, filters.PageSize);
+                products = await PaginatedList<ProductResponse>
+                        .CreateAsync(query, filters!.PageNumber, filters.PageSize);
+                await _cacheService.SetAsync(cacheKey, products.Items);
+            }
+            else
+            {
+                products=new PaginatedList<ProductResponse>(Cachedvalue,Cachedvalue.Count, filters.PageNumber, filters.PageSize);
+            }
 
             return new BaseResponse<PaginatedList<ProductResponse>>(true, ProductMessages.ProductsRetrieved, products);
         }
