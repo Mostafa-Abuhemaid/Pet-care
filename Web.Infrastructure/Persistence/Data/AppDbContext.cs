@@ -27,7 +27,11 @@ namespace Web.Infrastructure.Persistence.Data
 
         public DbSet<Category> categories { get; set; }
         public DbSet<Product> Products { get; set; }
-
+      
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<Special_Offers> Special_Offers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +41,16 @@ namespace Web.Infrastructure.Persistence.Data
             modelBuilder.Entity<Pet_Dog>().ToTable("Pet_Dogs");
 
             base.OnModelCreating(modelBuilder); // Important for Identity
+
+           
+
+            modelBuilder.Entity<CartItem>().HasOne(i => i.Cart)
+                 .WithMany(c => c.Items)
+                 .HasForeignKey(i => i.CartId);
+
+            modelBuilder.Entity<CartItem>().HasKey(ci => new { ci.CartId, ci.ProductId });
+
+            modelBuilder.Entity<Favorite>().HasKey(ci => new { ci.ProductId, ci.UserId });
 
             #region explanation
             //   انا هنا فصلت كل الكونفيجريشن بتاع كل مودل ف كلاس لوحده للتنظيم وعملت هنا كول لكل الكونفيجريشن

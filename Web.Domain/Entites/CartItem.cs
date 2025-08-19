@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Web.Domain.Entites
 {
-    public class CartItem:BaseModel
+    public class CartItem
     {
         public int CartId { get; set; }
         public int ProductId {  get; set; }
