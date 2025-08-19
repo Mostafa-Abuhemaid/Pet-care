@@ -39,7 +39,7 @@ namespace Web.Infrastructure.Service
 
             var otp = new Random().Next(100000, 999999).ToString();
             _memoryCache.Set(request.Email, otp, TimeSpan.FromMinutes(60));
-            await _emailService.SendEmailAsync(request.Email, "Smile-Simulation", $"Your verification code is: {otp}");
+            await _emailService.SendEmailAsync(request.Email, "Pet Paw", $"Your verification code is: {otp}");
             var Token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return new BaseResponse<string>(true, "Please check your email", Token);
         }
