@@ -11,5 +11,11 @@ namespace Web.Domain.Entites
         public string UserId { get; set; } =string.Empty;
         public AppUser User { get; set; } = default!;
         public ICollection<CartItem> Items { get; set; } = [];
+        public double TotalAmount => CalculateTotal();
+
+        private double CalculateTotal()
+        {
+            return Items.Sum(item => item.Product.Price * item.Quantity);
+        }
     }
 }

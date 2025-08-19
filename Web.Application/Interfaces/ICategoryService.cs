@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Web.Application.DTOs.CategoryDTO;
+using Web.Application.Response;
+using Web.Domain.Entites;
+
+namespace Web.Application.Interfaces
+{
+    public interface ICategoryService
+    {
+        Task<BaseResponse< Category>> CreateCategoryAsync(SendCategoryDTO sendCategoryDTO);
+      //  Task<BaseResponse<List<GetProductDTO>>> GetProductsByCategoryIdAsync(int categoryId);
+        Task<BaseResponse<bool>> DeleteCategoryAsync(int categoryId);
+        Task<BaseResponse<Category>> UpdateCategoryAsync(int Id , SendCategoryDTO categoryDTO);
+        Task<BaseResponse<List<GetCategoryDTO>>> GetAllCategory();
+       
+    }
+}
