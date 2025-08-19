@@ -90,6 +90,7 @@ namespace Web.APIs
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped(typeof(BasePetService<>));
             builder.Services.AddScoped<PetServiceFactory>(); 
             builder.Services.AddScoped<IProductService,ProductService>();
@@ -173,7 +174,7 @@ namespace Web.APIs
 
 
             // Configure the HTTP request pipeline
-            if (app.Environment.IsDevelopment())
+        //    if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

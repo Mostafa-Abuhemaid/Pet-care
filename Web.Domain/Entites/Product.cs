@@ -18,7 +18,7 @@ namespace Web.Domain.Entites
         public Category Category { get; set; }= default!;
         public ProductStats ProductStats { get; set; } = default!;
 
-        public ICollection<CartItem> CartItems { get; set; } = [];
+   //     public ICollection<CartItem> CartItems { get; set; } = [];
 
     }
 }
