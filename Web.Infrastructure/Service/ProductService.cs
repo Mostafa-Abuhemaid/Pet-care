@@ -25,7 +25,7 @@ namespace Web.Infrastructure.Service
             if (!await _context.categories.AnyAsync(c => c.Id == CategoryId||CategoryId==null))
                 return new BaseResponse<PaginatedList<ProductResponse>>(false, ProductMessages.CategoryNotFound);
 
-            var cacheKey = $"{_cachePrefix}-AllProducts";
+            var cacheKey = $"{_cachePrefix}-AllProducts-{CategoryId}";
             var Cachedvalue = await _cacheService.GetAsync<List<ProductResponse>>(cacheKey);
 
             PaginatedList<ProductResponse> products =default;
@@ -93,12 +93,12 @@ namespace Web.Infrastructure.Service
         public async Task<BaseResponse<List<OffersProductResponse>>> GetSpecialOffersAsync()
         {
             var items = await _context.Products
-      .AsNoTracking()
-      .Where(p => !p.Deleted && p.StockQuantity > 0)
-      .OrderBy(p => p.Createdon)
-      .Take(6)
-      .Select(p => new { p.Id, p.Name, p.ImageUrl })
-      .ToListAsync();
+              .AsNoTracking()
+              .Where(p => !p.Deleted && p.StockQuantity > 0)
+              .OrderBy(p => p.Createdon)
+              .Take(6)
+              .Select(p => new { p.Id, p.Name, p.ImageUrl })
+              .ToListAsync();
 
             var offers = items
                 .Select((p, index) => new OffersProductResponse(
@@ -116,7 +116,7 @@ namespace Web.Infrastructure.Service
 
         public async Task<BaseResponse<ProductDetailsResponse>>GetAsync(int id)
             {
-            if(await _context.Products.Include(x=>x.Category).FirstOrDefaultAsync(p=> p.Id == id) is not { } product)
+            if(await _context.Products.Include(x=>x.CategoryId).FirstOrDefaultAsync(p=> p.Id == id) is not { } product)
                 return new BaseResponse<ProductDetailsResponse> (false, ProductMessages.ProductNotFound);
 
             return new BaseResponse<ProductDetailsResponse>(true, ProductMessages.ProductsRetrieved, product.Adapt<ProductDetailsResponse>());

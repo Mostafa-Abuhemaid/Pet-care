@@ -12,7 +12,6 @@ namespace Web.Application.DTOs.ProductDTO
         string Description,
         string ImageUrl,
         int Price,
-        double StockQuantity,
         string CategoryName
     );
 }

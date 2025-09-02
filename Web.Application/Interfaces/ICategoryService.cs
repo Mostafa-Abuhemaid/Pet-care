@@ -11,10 +11,9 @@ namespace Web.Application.Interfaces
 {
     public interface ICategoryService
     {
-        Task<BaseResponse< Category>> CreateCategoryAsync(SendCategoryDTO sendCategoryDTO);
-      //  Task<BaseResponse<List<GetProductDTO>>> GetProductsByCategoryIdAsync(int categoryId);
+        Task<BaseResponse<GetCategoryDTO>> CreateCategoryAsync(SendCategoryDTO categoryDTO);
         Task<BaseResponse<bool>> DeleteCategoryAsync(int categoryId);
-        Task<BaseResponse<Category>> UpdateCategoryAsync(int Id , SendCategoryDTO categoryDTO);
+        Task<BaseResponse<GetCategoryDTO>> UpdateCategoryAsync(int Id , SendCategoryDTO categoryDTO);
         Task<BaseResponse<List<GetCategoryDTO>>> GetAllCategory();
        
     }

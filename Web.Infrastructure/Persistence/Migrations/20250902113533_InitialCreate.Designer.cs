@@ -9,11 +9,11 @@ using Web.Infrastructure.Persistence.Data;
 
 #nullable disable
 
-namespace Web.Infrastructure.Migrations
+namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250819012000_Add Favorite and Offers")]
-    partial class AddFavoriteandOffers
+    [Migration("20250902113533_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -582,6 +582,9 @@ namespace Web.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<int?>("PromoCodeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UpdatedByid")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
@@ -594,6 +597,8 @@ namespace Web.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PromoCodeId");
 
                     b.HasIndex("UpdatedByid");
 
@@ -610,8 +615,8 @@ namespace Web.Infrastructure.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("CartId", "ProductId");
 
@@ -721,6 +726,10 @@ namespace Web.Infrastructure.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("StockQuantity")
                         .HasColumnType("float");
 
@@ -780,6 +789,41 @@ namespace Web.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("ProductStats");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.PromoCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxUsageCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsedCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("promoCodes");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Special_Offers", b =>
@@ -932,11 +976,17 @@ namespace Web.Infrastructure.Migrations
 
             modelBuilder.Entity("Web.Domain.Entites.Cart", b =>
                 {
+                    b.HasOne("Web.Domain.Entites.PromoCode", "PromoCode")
+                        .WithMany()
+                        .HasForeignKey("PromoCodeId");
+
                     b.HasOne("Web.Domain.Entites.AppUser", "User")
                         .WithMany("Carts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PromoCode");
 
                     b.Navigation("User");
                 });
@@ -985,7 +1035,8 @@ namespace Web.Infrastructure.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Product_Category");
 
                     b.Navigation("Category");
                 });
