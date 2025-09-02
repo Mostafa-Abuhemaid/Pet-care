@@ -10,6 +10,7 @@ using Web.Application.Response;
 using Web.Domain.Entites;
 using Web.Infrastructure.Persistence.Data;
 using MapsterMapper;
+using Mapster;
 
 namespace Web.Infrastructure.Service
 {
@@ -19,31 +20,26 @@ namespace Web.Infrastructure.Service
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public CategoryService(AppDbContext context, IConfiguration configuration, IMapper mapper)
+        public CategoryService(AppDbContext context)
         {
             _Context = context;
-            _configuration = configuration;
-            _mapper = mapper;
         }
 
-        public async Task<BaseResponse<Category>> CreateCategoryAsync(SendCategoryDTO categoryDTO)
+        public async Task<BaseResponse<GetCategoryDTO>> CreateCategoryAsync(SendCategoryDTO categoryDTO)
         {
-            var imgName = Files.UploadFile(categoryDTO.Image, "Category");
-            if (string.IsNullOrEmpty(imgName))
-            {
-                throw new System.Exception("File upload failed.");
-            }
+            if (await _Context.categories.AnyAsync(x => x.Name == categoryDTO.Name))
+                return new BaseResponse<GetCategoryDTO>(false, "CategoryId is already exists");
 
             var category = new Category
             {
                 Name = categoryDTO.Name,
-                ImageUrl = imgName
             };
 
             await _Context.categories.AddAsync(category);
             await _Context.SaveChangesAsync();
+            var response = category.Adapt<GetCategoryDTO>();
 
-            return new BaseResponse<Category>(true, "Category was Added Successfully", category);
+            return new BaseResponse<GetCategoryDTO>(true, "CategoryId was Added Successfully", response);
         }
 
         public async Task<BaseResponse<bool>> DeleteCategoryAsync(int categoryId)
@@ -52,52 +48,39 @@ namespace Web.Infrastructure.Service
 
             if (category != null)
             {
-                _Context.categories.Remove(category);
+                //soft deleted to keep database
+                category.Deleted = true; 
                 await _Context.SaveChangesAsync();
-
-                Files.DeleteFile(category.ImageUrl, "Category");
-                return new BaseResponse<bool>(true, "Category was deleted successfully");
+                return new BaseResponse<bool>(true, "CategoryId was deleted successfully");
             }
-            return new BaseResponse<bool>(false, "Category not found");
+            return new BaseResponse<bool>(false, "CategoryId not found");
         }
 
         public async Task<BaseResponse<List<GetCategoryDTO>>> GetAllCategory()
         {
-            var categories = await _Context.categories.ToListAsync();
-
-            var catDtos = categories.Select(c => new GetCategoryDTO
-            {
-                Id = c.Id,
-                Name = c.Name,
-                ImageUrl = $"{_configuration["BaseURL"]}/Images/Category/{c.ImageUrl}"
-            }).ToList();
-
-            return new BaseResponse<List<GetCategoryDTO>>(true, "Categories retrieved successfully", catDtos);
+            var categories = await _Context.categories
+                .Where(c=>!c.Deleted)
+                .AsNoTracking()
+                .ProjectToType<GetCategoryDTO>()
+                .ToListAsync();
+            
+            return new BaseResponse<List<GetCategoryDTO>>(true, "Categories retrieved successfully", categories);
         }
 
-        public async Task<BaseResponse<Category>> UpdateCategoryAsync(int Id, SendCategoryDTO categoryDTO)
+        public async Task<BaseResponse<GetCategoryDTO>> UpdateCategoryAsync(int Id, SendCategoryDTO categoryDTO)
         {
             var category = await _Context.categories.FindAsync(Id);
 
-            if (category == null)
-                return new BaseResponse<Category>(false, "Category not found");
+            if (category == null||category.Deleted)
+                return new BaseResponse<GetCategoryDTO>(false, "CategoryId not found");
 
             category.Name = categoryDTO.Name;
 
-  
-            if (categoryDTO.Image != null)
-            {         
-                Files.DeleteFile(category.ImageUrl, "Category");
-
-                var imgName = Files.UploadFile(categoryDTO.Image, "Category");
-
-                category.ImageUrl = imgName;
-            }
-
             _Context.categories.Update(category);
             await _Context.SaveChangesAsync();
+            var response = category.Adapt<GetCategoryDTO>();
 
-            return new BaseResponse<Category>(true, "Category updated successfully", category);
+            return new BaseResponse<GetCategoryDTO>(true, "CategoryId updated successfully", response);
         }
     }
 }

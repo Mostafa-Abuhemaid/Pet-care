@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Web.Application.DTOs.CategoryDTO
 {
-    public class SendCategoryDTO
-    {
-        public string Name { get; set; }
-        public IFormFile Image { get; set; }
-    }
+    public record SendCategoryDTO
+    (
+         string Name
+        );
 }

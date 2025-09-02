@@ -2,16 +2,16 @@
 
 #nullable disable
 
-namespace Web.Infrastructure.Migrations
+namespace Web.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateProduct : Migration
+    public partial class addrateproduct : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<double>(
-                name: "StockQuantity",
+                name: "rate",
                 table: "Products",
                 type: "float",
                 nullable: false,
@@ -22,7 +22,7 @@ namespace Web.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "StockQuantity",
+                name: "rate",
                 table: "Products");
         }
     }

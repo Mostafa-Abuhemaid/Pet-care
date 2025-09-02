@@ -97,6 +97,8 @@ namespace Web.APIs
             builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddScoped<ApplicationSeeder>();
             builder.Services.AddScoped<ICacheService, CacheService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
 
             // Mapping Configuration ==> AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -159,22 +161,19 @@ namespace Web.APIs
             var app = builder.Build();
 
 
-            // ✨ استدعاء الـ seeding هنا
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                // ✅ يضمن إن الـ DB تتعمل لو مش موجودة + يطبق أي Migrations
-                context.Database.Migrate();
-
                 var seeder = scope.ServiceProvider.GetRequiredService<ApplicationSeeder>();
-                seeder.SeedAllAsync().GetAwaiter().GetResult();
+
+                context.Database.Migrate(); // بدل MigrateAsync
+                seeder.SeedAllAsync().Wait(); // بدل await
             }
 
 
 
             // Configure the HTTP request pipeline
-        //    if (app.Environment.IsDevelopment())
+            //    if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
