@@ -13,6 +13,9 @@ namespace Web.Application.Interfaces
     public interface IPromoCodeService
     {
         Task<BaseResponse<decimal>> ApplyPromoCode(CartResponse response, string code);
-        Task<PromoCode> CreatePromoCodeAsync(CreatePromoCodeDto dto);
+        Task<BaseResponse<PromoCodeResponse>> CreatePromoCodeAsync(CreatePromoCodeDto dto);
+        Task<BaseResponse<IEnumerable<PromoCodeResponse>>> GetAllPromoCodeAsync();
+        Task<BaseResponse<bool>> DeletePromoCodeAsync(int codeid);
+        Task<BaseResponse<bool>> ToggelStatusActive(int codeid);
     }
 }
