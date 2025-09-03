@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Mapster;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +47,7 @@ namespace Web.Infrastructure.Service
             return new BaseResponse<decimal>(true, "Promo code applied successfully", totalAfterDiscount);
         }
 
-        public async Task<PromoCode> CreatePromoCodeAsync(CreatePromoCodeDto dto)
+        public async Task<BaseResponse<PromoCodeResponse>> CreatePromoCodeAsync(CreatePromoCodeDto dto)
         {
             string code = await GenerateUniqueCodeAsync();
 
@@ -62,8 +64,32 @@ namespace Web.Infrastructure.Service
 
             _context.promoCodes.Add(promoCode);
             await _context.SaveChangesAsync();
+            var response=promoCode.Adapt<PromoCodeResponse>();
 
-            return promoCode;
+            return new BaseResponse<PromoCodeResponse>(true,"Success", response);
+        }
+
+        public async Task<BaseResponse<IEnumerable<PromoCodeResponse>>> GetAllPromoCodeAsync()
+        {
+           var codes=await _context.promoCodes.AsNoTracking().ProjectToType<PromoCodeResponse>().ToListAsync();
+            return new BaseResponse<IEnumerable<PromoCodeResponse>>(true,"Success",codes);
+        }
+
+        public async Task<BaseResponse<bool>> DeletePromoCodeAsync(int codeid)
+        {
+            if (await _context.promoCodes.FirstOrDefaultAsync(x => x.Id == codeid) is not { } code)
+                return new BaseResponse<bool>(false, "Code is not found");
+
+           _context.promoCodes.Remove(code);
+            await _context.SaveChangesAsync();
+            return new BaseResponse<bool>(true, "success");
+        }
+
+        public async Task<BaseResponse<bool>>ToggelStatusActive(int codeid)
+        {
+            var code=await _context.promoCodes.FirstOrDefaultAsync(x=>x.Id== codeid);
+            code.IsActive=!code.IsActive;
+            return new BaseResponse<bool>(true, "Sucess");
         }
 
         private async Task<string> GenerateUniqueCodeAsync()
@@ -83,6 +109,7 @@ namespace Web.Infrastructure.Service
 
             return code;
         }
+
 
     }
 }
