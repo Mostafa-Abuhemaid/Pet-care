@@ -14,7 +14,7 @@ namespace Web.Infrastructure.Persistence.Configurations
     {
         public override void Configure(EntityTypeBuilder<Product> builder)
         {
-            base.Configure(builder); // يطبّق القواعد المشتركة من BaseConfiguration
+            base.Configure(builder);
 
             builder.Property(x => x.Name)
                 .IsRequired()
@@ -23,20 +23,22 @@ namespace Web.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Price)
                 .IsRequired();
 
+            // الحل: تحديد اسم الـ navigation property بشكل صحيح
             builder.HasOne(x => x.Category)
                 .WithMany(c => c.Products)
-                .HasForeignKey(x => x.CategoryId);
+                .HasForeignKey(x => x.CategoryId)
+                .HasConstraintName("FK_Product_Category"); // اختياري
 
             builder.HasOne(p => p.ProductStats)
-            .WithOne(s => s.Product)
-            .HasForeignKey<ProductStats>(s => s.ProductId);
-
+                .WithOne(s => s.Product)
+                .HasForeignKey<ProductStats>(s => s.ProductId);
 
             builder.HasIndex(x => x.Price);
             builder.HasIndex(x => x.Name);
             builder.HasIndex(x => x.Deleted);
             builder.HasIndex(x => x.StockQuantity);
-        }
+        
+    }
     }
 
 }

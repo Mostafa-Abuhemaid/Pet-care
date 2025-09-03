@@ -30,6 +30,7 @@ namespace Web.Infrastructure.Persistence.Data
       
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<PromoCode> promoCodes { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Special_Offers> Special_Offers { get; set; }
 
@@ -60,7 +61,7 @@ namespace Web.Infrastructure.Persistence.Data
             #region explanation2
             // Restrict بص ي هندسه (مصطفي و محمد )انا ضيفت الكود دا هنا علشان اغير سلوك المسح  كله يكون  
             //  علشان مدخلش ف مشكله زي اني امسح كاتيجوري مثلا تمسح كل المنتجات اللي تحتها  
-            // Cascade على أكتر من مستوى ====>(Category → Product → OrderItems)، وده يمسح آلاف الصفوف من غير ما تحس.
+            // Cascade على أكتر من مستوى ====>(CategoryId → Product → OrderItems)، وده يمسح آلاف الصفوف من غير ما تحس.
             //soft delete بيحظرك ويجبرك انك تمسح العلاقات اللي بين الجداول دي وبعض او انك تستخدم   Restrict لكن بقا سلوك 
             #endregion
             var cascadeFKs = modelBuilder.Model

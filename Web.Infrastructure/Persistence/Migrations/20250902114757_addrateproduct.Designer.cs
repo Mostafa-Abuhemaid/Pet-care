@@ -9,11 +9,11 @@ using Web.Infrastructure.Persistence.Data;
 
 #nullable disable
 
-namespace Web.Infrastructure.Migrations
+namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250812131315_UpdateProduct")]
-    partial class UpdateProduct
+    [Migration("20250902114757_addrateproduct")]
+    partial class addrateproduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -582,6 +582,9 @@ namespace Web.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<int?>("PromoCodeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UpdatedByid")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
@@ -595,56 +598,31 @@ namespace Web.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PromoCodeId");
+
                     b.HasIndex("UpdatedByid");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Cart");
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.CartItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("CartId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Createdon")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<bool>("Deleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
-                    b.Property<string>("UpdatedByid")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("Updatedon")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CartId");
+                    b.HasKey("CartId", "ProductId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("UpdatedByid");
-
-                    b.ToTable("CartItem");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Category", b =>
@@ -696,6 +674,21 @@ namespace Web.Infrastructure.Migrations
                     b.ToTable("categories");
                 });
 
+            modelBuilder.Entity("Web.Domain.Entites.Favorite", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ProductId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
+                });
+
             modelBuilder.Entity("Web.Domain.Entites.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -733,6 +726,10 @@ namespace Web.Infrastructure.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("StockQuantity")
                         .HasColumnType("float");
 
@@ -743,17 +740,127 @@ namespace Web.Infrastructure.Migrations
                     b.Property<DateTime?>("Updatedon")
                         .HasColumnType("datetime2");
 
+                    b.Property<double>("rate")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Deleted");
 
                     b.HasIndex("Name");
 
                     b.HasIndex("Price");
 
+                    b.HasIndex("StockQuantity");
+
                     b.HasIndex("UpdatedByid");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.ProductStats", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Createdon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SalesCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedByid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Updatedon")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductStats");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.PromoCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxUsageCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsedCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("promoCodes");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.Special_Offers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Createdon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ImgURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedByid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Updatedon")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Special_Offers");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.Pet_Cat", b =>
@@ -872,11 +979,17 @@ namespace Web.Infrastructure.Migrations
 
             modelBuilder.Entity("Web.Domain.Entites.Cart", b =>
                 {
+                    b.HasOne("Web.Domain.Entites.PromoCode", "PromoCode")
+                        .WithMany()
+                        .HasForeignKey("PromoCodeId");
+
                     b.HasOne("Web.Domain.Entites.AppUser", "User")
                         .WithMany("Carts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PromoCode");
 
                     b.Navigation("User");
                 });
@@ -890,7 +1003,7 @@ namespace Web.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Web.Domain.Entites.Product", "Product")
-                        .WithMany("CartItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -900,10 +1013,52 @@ namespace Web.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Web.Domain.Entites.Favorite", b =>
+                {
+                    b.HasOne("Web.Domain.Entites.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Web.Domain.Entites.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Web.Domain.Entites.Product", b =>
                 {
                     b.HasOne("Web.Domain.Entites.Category", "Category")
                         .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Product_Category");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.ProductStats", b =>
+                {
+                    b.HasOne("Web.Domain.Entites.Product", "Product")
+                        .WithOne("ProductStats")
+                        .HasForeignKey("Web.Domain.Entites.ProductStats", "ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.Special_Offers", b =>
+                {
+                    b.HasOne("Web.Domain.Entites.Category", "Category")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -935,7 +1090,8 @@ namespace Web.Infrastructure.Migrations
 
             modelBuilder.Entity("Web.Domain.Entites.Product", b =>
                 {
-                    b.Navigation("CartItems");
+                    b.Navigation("ProductStats")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

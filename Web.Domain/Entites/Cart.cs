@@ -11,6 +11,9 @@ namespace Web.Domain.Entites
         public string UserId { get; set; } =string.Empty;
         public AppUser User { get; set; } = default!;
         public ICollection<CartItem> Items { get; set; } = [];
+        // FK
+        public int? PromoCodeId { get; set; }
+        public PromoCode? PromoCode { get; set; }
         public double TotalAmount => CalculateTotal();
 
         private double CalculateTotal()

@@ -27,7 +27,7 @@ namespace Web.APIs.Controllers
             return Ok(categories);
         }
         [HttpPost]
-        public async Task<IActionResult> AddCategory([FromForm]SendCategoryDTO categoryDTO)
+        public async Task<IActionResult> AddCategory([FromQuery]SendCategoryDTO categoryDTO)
         {
             var category = await _CategoryService.CreateCategoryAsync(categoryDTO);
            return Ok(category);
@@ -42,7 +42,7 @@ namespace Web.APIs.Controllers
         }
 
         [HttpPut("{Id}")]
-        public async Task<IActionResult> UpdateCategory(int Id,[FromForm] SendCategoryDTO categoryDTO)
+        public async Task<IActionResult> UpdateCategory(int Id,[FromQuery] SendCategoryDTO categoryDTO)
         {
             var category = await _CategoryService.UpdateCategoryAsync(Id,categoryDTO);
             return category.Success ? Ok(category) : BadRequest(category);

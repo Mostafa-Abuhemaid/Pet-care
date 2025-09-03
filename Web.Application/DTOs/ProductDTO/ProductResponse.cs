@@ -10,8 +10,11 @@ namespace Web.Application.DTOs.ProductDTO
     (
         int id,
         string name,
-        double StockQuantity,
+       string Description,
+       string Size,
+        double rate,
         int Price,
         string ImageUrl
+
     );
 }
