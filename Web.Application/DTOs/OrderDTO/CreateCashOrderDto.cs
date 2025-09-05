@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Web.Domain.Entites
+namespace Web.Application.DTOs.OrderDTO
 {
-    //public class BaseClass<T>
-    //{
-    //    public T Id { get; set; }
-    //}
+    public class CreateCashOrderDto:CreateOrderDto
+    {
+
+    }
 }

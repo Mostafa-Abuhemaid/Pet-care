@@ -14,9 +14,9 @@ namespace Web.Domain.Entites
         // FK
         public int? PromoCodeId { get; set; }
         public PromoCode? PromoCode { get; set; }
-        public double TotalAmount => CalculateTotal();
+        public decimal TotalAmount => CalculateTotal();
 
-        private double CalculateTotal()
+        private decimal CalculateTotal()
         {
             return Items.Sum(item => item.Product.Price * item.Quantity);
         }

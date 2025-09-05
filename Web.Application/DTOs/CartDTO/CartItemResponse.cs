@@ -14,7 +14,7 @@ namespace Web.Application.DTOs.CartDTO
         string categoryname,
         string size,
         string ImageUrl,
-        int Price,
+        decimal Price,
         int Quantity
 
     );
