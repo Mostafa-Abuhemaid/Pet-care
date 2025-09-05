@@ -98,6 +98,8 @@ namespace Web.APIs
             builder.Services.AddScoped<ApplicationSeeder>();
             builder.Services.AddScoped<ICacheService, CacheService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<PricingService>();
             builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
 
             // Mapping Configuration ==> AutoMapper

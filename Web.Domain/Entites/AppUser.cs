@@ -16,5 +16,7 @@ namespace Web.Domain.Entites
 
         public ICollection<Pet> Pets { get; set; } =[];
         public ICollection<Cart> Carts { get; set; }=[];
+        public ICollection<Address> addresses { get; set; }=[];
+        public ICollection<Order> orders { get; set; }=[];
     }
 }

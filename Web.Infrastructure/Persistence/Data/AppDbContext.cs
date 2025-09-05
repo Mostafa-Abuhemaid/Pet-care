@@ -31,6 +31,8 @@ namespace Web.Infrastructure.Persistence.Data
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<PromoCode> promoCodes { get; set; }
+        public DbSet<Order> orders { get; set; }
+        public DbSet<Address> addresses { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Special_Offers> Special_Offers { get; set; }
 

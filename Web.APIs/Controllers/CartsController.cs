@@ -53,15 +53,15 @@ namespace Web.APIs.Controllers
 
             var updatedCart = cartResult.Data with
             {
-                OrderAmount = (double)promoResult.Data - cartResult.Data.Tax
+                OrderAmount = promoResult.Data - cartResult.Data.Tax
             };
 
             return Ok(new
             {
                 message = promoResult.Message,
                 totalBefore = cartResult.Data.TotalPayment,
-                discountApplied = cartResult.Data.TotalPayment - (double)promoResult.Data,
-                totalAfter = (double)promoResult.Data,
+                discountApplied = cartResult.Data.TotalPayment - promoResult.Data,
+                totalAfter = promoResult.Data,
 
                 cart = updatedCart
             });
