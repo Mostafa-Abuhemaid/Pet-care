@@ -7,7 +7,7 @@ using Web.Domain.Enums;
 
 namespace Web.Application.DTOs.OrderDTO
 {
-    public abstract class CreateOrderDto
+    public  class CreateOrderDto
     {
         public string Country { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
