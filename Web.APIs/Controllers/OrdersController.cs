@@ -15,31 +15,14 @@ namespace Web.APIs.Controllers
     {
         private readonly IOrderService _orderService = orderService;
 
-        [HttpPost("create/cash-on-delivery")]
-        public async Task<IActionResult> CreateCashOnDeliveryOrder([FromBody] CreateOrderDto request)
+        [HttpPost("Confirm")]
+        public async Task<IActionResult> ConfirmOrder([FromBody] CreateOrderDto request)
         {
-            request.PaymentMethod = PaymentMethod.CashOnDelivery;
             var userId = User.GetUserId();
             var result = await _orderService.CreateOrderAsync(userId, request);
             return result.Success ? Ok(result) : BadRequest(result);
+            //TODOO // ممكن تغير حالة الأوردر أو تبعث إشعار للعميل
         }
 
-        [HttpPost("create/credit-card")]
-        public async Task<IActionResult> CreateCreditCardOrder([FromBody] CreateCardOrderDto request)
-        {
-            request.PaymentMethod = PaymentMethod.CreditCard;
-            var userId = User.GetUserId();
-            var result = await _orderService.CreateOrderAsync(userId, request);
-            return result.Success ? Ok(result) : BadRequest(result);
-        }
-
-        [HttpPost("create/wallet")]
-        public async Task<IActionResult> CreateWalletOrder([FromBody] CreateWalletOrderDto request)
-        {
-            request.PaymentMethod = PaymentMethod.Wallet;
-            var userId = User.GetUserId();
-            var result = await _orderService.CreateOrderAsync(userId, request);
-            return result.Success ? Ok(result) : BadRequest(result);
-        }
     }
 }

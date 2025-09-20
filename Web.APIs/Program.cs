@@ -19,6 +19,7 @@ using Web.Domain.Entites;
 using Web.Infrastructure.Persistence.Data;
 using Web.Infrastructure.Seeding;
 using Web.Infrastructure.Service;
+using Web.Infrastructure.Service.Stripe;
 
 namespace Web.APIs
 {
@@ -84,6 +85,7 @@ namespace Web.APIs
 
             // Email Configuration
             builder.Services.Configure<EmailDto>(configuration.GetSection("MailSettings"));
+            builder.Services.Configure<StripeSettings>(configuration.GetSection("StripePaymentService"));
 
             // Dependency Injection
             builder.Services.AddTransient<IEmailService, EmailService>();
@@ -101,6 +103,7 @@ namespace Web.APIs
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<PricingService>();
             builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
+            builder.Services.AddScoped<IPaymentService, StripePaymentService>();
 
             // Mapping Configuration ==> AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
