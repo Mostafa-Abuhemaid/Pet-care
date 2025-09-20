@@ -11,6 +11,6 @@ namespace Web.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<BaseResponse<bool>> CreateOrderAsync(string UserId, CreateOrderDto dto);
+        Task<BaseResponse<int>> CreateOrderAsync(string userId, CreateOrderDto dto);
     }
 }
