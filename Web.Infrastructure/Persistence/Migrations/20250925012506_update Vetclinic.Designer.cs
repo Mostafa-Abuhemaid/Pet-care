@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Persistence.Data;
 namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250925012506_update Vetclinic")]
+    partial class updateVetclinic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -406,9 +409,6 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CountOfPatients")
                         .HasColumnType("int");
 
@@ -431,6 +431,9 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsEmergencyAvailable")
                         .HasColumnType("bit");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -466,7 +469,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("Name");
 
@@ -1254,13 +1257,13 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("PetCare.Api.Entities.VetClinic", b =>
                 {
-                    b.HasOne("Web.Domain.Entites.Address", "Address")
+                    b.HasOne("Web.Domain.Entites.Address", "Location")
                         .WithMany()
-                        .HasForeignKey("AddressId")
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.VetReview", b =>
