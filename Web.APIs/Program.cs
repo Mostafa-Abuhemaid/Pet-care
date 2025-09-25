@@ -104,6 +104,7 @@ namespace Web.APIs
             builder.Services.AddScoped<PricingService>();
             builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
             builder.Services.AddScoped<IPaymentService, StripePaymentService>();
+            builder.Services.AddScoped<IVetService, VetService>();
 
             // Mapping Configuration ==> AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
