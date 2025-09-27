@@ -38,6 +38,8 @@ namespace Web.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(x => x.Name);
             builder.HasIndex(x => x.PricePerNight);
+            
+          
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Web.Application.Common;
 using Web.Application.DTOs.VetDTO;
 using Web.Application.Interfaces;
 using Web.Domain.Enums;
@@ -30,9 +31,9 @@ namespace Web.APIs.Controllers
         }
 
         [HttpGet("Get-All-Vets")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] RequestFilters filters = default!, [FromQuery] AddtionalRequestFilters addtionalRequestFilters=default!)
         {
-            var result=await _vetService.GetAllAsync();
+            var result=await _vetService.GetAllAsync(filters,addtionalRequestFilters);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
