@@ -13,7 +13,7 @@ namespace Web.Application.Interfaces
     public interface IVetService
     {
         Task<BaseResponse<VetDetailsDto>> AddAsync(string userId, VetRequest request);
-        Task<BaseResponse<PaginatedList<VetListItemDto>>> GetAllAsync();
+        Task<BaseResponse<PaginatedList<VetListItemDto>>> GetAllAsync(RequestFilters filters = default!,AddtionalRequestFilters addtionalRequestFilters=default!);
         Task<BaseResponse<VetDetailsDto>> GetAsync(int id);
         Task<BaseResponse<bool>> UpdateAsync(int id, VetRequest request);
         Task<BaseResponse<bool>> DeleteAsync(int id);
