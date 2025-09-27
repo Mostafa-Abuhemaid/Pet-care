@@ -22,15 +22,13 @@ namespace Web.Infrastructure.Service
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<BaseResponse<VetDetailsDto>> AddAsync(VetRequest request)
+        public async Task<BaseResponse<VetDetailsDto>> AddAsync(string userId,VetRequest request)
         {
             if (await _context.VetClinics.AnyAsync(x => x.Name == request.Name))
                 return new BaseResponse<VetDetailsDto>(false, "Vet is Already Exist!");
 
-            //toDOO   ADD userid for add addresss
-
-
             var entity = request.Adapt<VetClinic>();
+            entity.Address.UserId=userId;
             if (request.Photo != null)
                 entity.logoUrl = Files.UploadFile(request.Photo, "Vet");
             await _context.VetClinics.AddAsync(entity);
@@ -57,25 +55,37 @@ namespace Web.Infrastructure.Service
 
         public async Task<BaseResponse<VetDetailsDto>> GetAsync(int id)
         {
-            if (await _context.VetClinics.AnyAsync(x => x.Id == id &&!x.Deleted))
+            if (!await _context.VetClinics.AnyAsync(x => x.Id == id))
+                return new BaseResponse<VetDetailsDto>(false, $"Vet with {id} is Not Found !");
+
+            if (await _context.VetClinics.AnyAsync(x => x.Id == id &&x.Deleted))
                 return new BaseResponse<VetDetailsDto>(false, $"Vet with {id} is Deleted !");
 
             var vet = await _context.VetClinics
+                .Include(x=>x.Address)
                 .Include(x => x.vetSchedules)
                 .Include(x => x.appointments)
                 .Include(x => x.Reviews)
                 .ThenInclude(x => x.AppUser)
                 .FirstOrDefaultAsync(x => x.Id == id);
             var response=vet.Adapt<VetDetailsDto>();
+          
             return new BaseResponse<VetDetailsDto>(true, "Success!", response);
         }
 
         public async Task<BaseResponse<bool>> UpdateAsync(int id, VetRequest request)
         {
-            if (await _context.VetClinics.SingleOrDefaultAsync(x => x.Id == id&&!x.Deleted|| x.Name == request.Name) is not { } vet)
-                return new BaseResponse<bool>(false, $"Vet with {request.Name} is Deleted or Another Vet with the same name already exists !");
+            var vet = await _context.VetClinics
+                .Include(x => x.Address)
+                .FirstOrDefaultAsync(x => x.Id == id && !x.Deleted);
 
-            string newPhotoUrl = vet.logoUrl!;
+            if (vet is null)
+                return new BaseResponse<bool>(false, $"Vet with {id} not found or is deleted!");
+
+            if (await _context.VetClinics.AnyAsync(x => x.Id != id && x.Name == request.Name))
+                return new BaseResponse<bool>(false, $"Another Vet with the same name already exists!");
+
+            string newPhotoUrl = vet.logoUrl;
             if (request.Photo != null)
             {
                 newPhotoUrl = Files.UploadFile(request.Photo, "Vet");
@@ -83,21 +93,25 @@ namespace Web.Infrastructure.Service
                     Files.DeleteFile(vet.logoUrl, "Vet");
             }
 
-            await _context.VetClinics.Where(x => x.Id == id)
-  .ExecuteUpdateAsync(setters =>
-        setters.SetProperty(x => x.Name, request.Name)
-               .SetProperty(x => x.Description, request.Description)
-               .SetProperty(x => x.Type, request.Type)
-               .SetProperty(x => x.Phone, request.Phone)
-               .SetProperty(x => x.Services, request.Services)
-               .SetProperty(x => x.Experience, request.Experience)
-               .SetProperty(x => x.IsEmergencyAvailable, request.IsEmergencyAvailable)
-               .SetProperty(x => x.Address.City, request.Address.City)
-               .SetProperty(x => x.Address.Country, request.Address.Country)
-               .SetProperty(x => x.Address.Street, request.Address.Street)
-               .SetProperty(x => x.PricePerNight, request.PricePerNight)
-               .SetProperty(x => x.CountOfPatients, request.CountOfPatients));
+            vet.Name = request.Name;
+            vet.Description = request.Description;
+            vet.Type = request.Type;
+            vet.Phone = request.Phone;
+            vet.Services = request.Services;
+            vet.Experience = request.Experience;
+            vet.IsEmergencyAvailable = request.IsEmergencyAvailable;
+            vet.PricePerNight = request.PricePerNight;
+            vet.CountOfPatients = request.CountOfPatients;
+            vet.logoUrl = newPhotoUrl;
+
+            vet.Address.City = request.Address.City;
+            vet.Address.Country = request.Address.Country;
+            vet.Address.Street = request.Address.Street;
+
+            await _context.SaveChangesAsync();
+
             return new BaseResponse<bool>(true, "Updated successfully.", true);
         }
+
     }
 }

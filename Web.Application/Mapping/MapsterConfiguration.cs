@@ -2,6 +2,7 @@
 using PetCare.Api.Entities;
 using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.DTOs.ProductDTO;
+using Web.Application.DTOs.VetDTO;
 using Web.Domain.Entites;
 
 namespace Web.Application.Mapping
@@ -24,6 +25,24 @@ namespace Web.Application.Mapping
             config.NewConfig<Product, ProductResponse>()
                  .Map(dis => dis.rate, src => src.rate)
                 .TwoWays();
+
+            config.NewConfig<VetClinic, VetDetailsDto>()
+                .Map(dest => dest.logoUrl,
+                    src => $"{baseUrl}/Vet/{src.logoUrl}")
+                 .Map(dest => dest.Location,
+                      src => src.Address == null ? "N/A" : $"{src.Address.Country}/{src.Address.City}/{src.Address.Street}")
+                 .Map(dis => dis.Schedules, src => src.vetSchedules)
+                 .Map(dest => dest.AverageRating,
+                      src => src.Reviews != null && src.Reviews.Any()
+                    ? src.Reviews.Average(r => r.Rating)
+                    : 0.0)
+                 .Map(dest => dest.ReviewsCount,
+                 src => src.Reviews != null ? src.Reviews.Count : 0);
+
+
+
+
+
 
 
         }

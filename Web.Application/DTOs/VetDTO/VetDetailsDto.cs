@@ -21,8 +21,8 @@ namespace Web.Application.DTOs.VetDTO
         int CountOfPatients,
         double AverageRating,
         int ReviewsCount,
-        List<VetReviewDto> Reviews,     
-        List<VetScheduleDto> Schedules  
+    List<VetReviewDto>? Reviews,
+    List<VetScheduleDto>? Schedules
     );
 
 }

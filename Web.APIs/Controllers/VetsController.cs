@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Application.DTOs.VetDTO;
 using Web.Application.Interfaces;
+using Web.Domain.Enums;
 
 namespace Web.APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VetsController(IVetService vetService) : ControllerBase
     {
         private readonly IVetService _vetService = vetService;
@@ -14,7 +17,8 @@ namespace Web.APIs.Controllers
         [HttpPost("Add-New-Vet")]
         public async Task<IActionResult> Add([FromForm] VetRequest request)
         {
-            var result=await _vetService.AddAsync(request);
+            var userid=User.GetUserId();
+            var result=await _vetService.AddAsync(userid,request);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
