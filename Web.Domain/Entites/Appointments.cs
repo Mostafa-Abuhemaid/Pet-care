@@ -14,9 +14,9 @@ namespace Web.Domain.Entites
         public VetClinic VetClinic { get; set; } = default!;
         public string AppUserId { get; set; } = string.Empty;
         public AppUser AppUser { get; set; } = default!;
-        public DateOnly Date { get;set; }            // التاريخ اللي اتحدد
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public DateTime Date { get;set; }            // التاريخ اللي اتحدد
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
         public string Status { get; set; } = string.Empty;//(Booked / Cancelled / Completed)
     }
 }
