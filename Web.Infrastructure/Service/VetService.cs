@@ -17,6 +17,7 @@ using Web.Application.Files;
 using Web.Application.Interfaces;
 using Web.Application.Response;
 using Web.Domain.Entites;
+using Web.Domain.Enums;
 using Web.Infrastructure.Persistence.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -106,6 +107,52 @@ namespace Web.Infrastructure.Service
 
             return new BaseResponse<VetDetailsDto>(true, "Success!", response);
         }
+
+
+        public async Task<BaseResponse<List<AvailableSlotDto>>> GetAvailableSlotsAsync(int VetId, GetAvailableSlotsRequest request)
+        {
+            var schedule = await _context.VetSchedule
+                .Include(x => x.vetClinic)
+                .ThenInclude(x=>x.Address)
+                .FirstOrDefaultAsync(s => s.VetClinicId == VetId
+                                       && s.DayOfWeek == (DayOfWeekEnum)request.Date.DayOfWeek);
+
+            if (schedule == null)
+                return new BaseResponse<List<AvailableSlotDto>>(true, "Success", new List<AvailableSlotDto>());
+
+            var booked = await _context.Appointments
+                .Where(a => a.VetClinicId == VetId
+                         && a.Date.Date == request.Date.ToDateTime(TimeOnly.MinValue).Date)
+                .Select(a => a.StartTime)
+                .ToListAsync();
+
+            var slots = new List<AvailableSlotDto>();
+            var current = request.Date.ToDateTime(schedule.StartTime);
+            var end = request.Date.ToDateTime(schedule.EndTime);
+
+            while (current < end)
+            {
+                var next = current.AddMinutes(60); // slot duration
+                var isBooked = booked.Contains(TimeOnly.FromDateTime(current));
+
+
+                slots.Add(new AvailableSlotDto(
+                    request.Date,
+                    current,
+                    next,
+                    schedule.vetClinic.Address.Adapt<AddressDto>(),
+                    schedule.vetClinic.PricePerNight,
+                    isBooked
+                ));
+
+                current = next;
+            }
+
+
+            var available = slots.Where(s => !s.IsBooked).ToList();
+            return new BaseResponse<List<AvailableSlotDto>>(true, "Success", available);
+        }
+
 
         public async Task<BaseResponse<bool>> UpdateAsync(int id, VetRequest request)
         {
@@ -207,8 +254,10 @@ namespace Web.Infrastructure.Service
 
             if (filters.OpenNow == true)
             {
-                var now = DateTime.Now.TimeOfDay;
-                query = query.Where(x => x.vetSchedules.Any(s => s.StartTime <= now && s.EndTime >= now));
+     var now = TimeOnly.FromDateTime(DateTime.Now);
+query = query.Where(x => x.vetSchedules.Any(s =>
+    s.StartTime <= now && s.EndTime >= now));
+
             }
 
             if (filters.PriceMin.HasValue)
@@ -232,7 +281,6 @@ namespace Web.Infrastructure.Service
             return query;
 
         }
-
 
     }
 }

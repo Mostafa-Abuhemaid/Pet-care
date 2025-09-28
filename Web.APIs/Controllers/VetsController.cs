@@ -29,6 +29,14 @@ namespace Web.APIs.Controllers
             var result=await _vetService.GetAsync(id);
             return result.Success ? Ok(result) : BadRequest(result);
         }
+        [HttpPost("GetAvailableSlots-Vet/{id}")]
+        public async Task<IActionResult> GetAvailableSlots([FromRoute]int id,[FromBody]GetAvailableSlotsRequest request)
+        {
+            var result=await _vetService.GetAvailableSlotsAsync(id,request);
+            return result.Success ? Ok(result) : BadRequest(result);
+        }
+
+
 
         [HttpGet("Get-All-Vets")]
         public async Task<IActionResult> GetAll([FromQuery] RequestFilters filters = default!, [FromQuery] AddtionalRequestFilters addtionalRequestFilters=default!)
@@ -45,7 +53,7 @@ namespace Web.APIs.Controllers
         }
 
         [HttpDelete("Delete-Vet/{id}")]
-        public async Task<IActionResult> Add([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var result=await _vetService.DeleteAsync(id);
             return result.Success ? Ok(result) : BadRequest(result);
