@@ -16,6 +16,7 @@ using Web.Application.DTOs.VetDTO;
 using Web.Application.Files;
 using Web.Application.Interfaces;
 using Web.Application.Response;
+using Web.Domain.Entites;
 using Web.Infrastructure.Persistence.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -33,6 +34,14 @@ namespace Web.Infrastructure.Service
 
             var entity = request.Adapt<VetClinic>();
             entity.Address.UserId = userId;
+            if (request.Services != null && request.Services.Any())
+            {
+                entity.Services = request.Services
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Select(s => new VetClinicService { Name = s.Trim() })
+                    .ToList();
+            }
+
             if (request.Photo != null)
                 entity.logoUrl = Files.UploadFile(request.Photo, "Vet");
             await _context.VetClinics.AddAsync(entity);
@@ -60,6 +69,7 @@ namespace Web.Infrastructure.Service
                  .Include(x => x.appointments)
                  .Include(x => x.Reviews)
                  .ThenInclude(x => x.AppUser)
+                 .Include(x => x.Services)
                  .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filters.SearchValue))
@@ -85,6 +95,7 @@ namespace Web.Infrastructure.Service
                 return new BaseResponse<VetDetailsDto>(false, $"Vet with {id} is Deleted !");
 
             var vet = await _context.VetClinics
+                .Include(x => x.Services)
                 .Include(x => x.Address)
                 .Include(x => x.vetSchedules)
                 .Include(x => x.appointments)
@@ -120,12 +131,15 @@ namespace Web.Infrastructure.Service
             vet.Description = request.Description;
             vet.Type = request.Type;
             vet.Phone = request.Phone;
-            vet.Services = request.Services;
             vet.Experience = request.Experience;
             vet.IsEmergencyAvailable = request.IsEmergencyAvailable;
             vet.PricePerNight = request.PricePerNight;
             vet.CountOfPatients = request.CountOfPatients;
             vet.logoUrl = newPhotoUrl;
+            vet.Services = request.Services
+                 .Where(s => !string.IsNullOrWhiteSpace(s))
+                 .Select(s => new VetClinicService { Name = s.Trim() })
+                 .ToList();
 
             vet.Address.City = request.Address.City;
             vet.Address.Country = request.Address.Country;
@@ -173,7 +187,7 @@ namespace Web.Infrastructure.Service
                 x.Reviews.Select(r => (double?)r.Rating).Average() ?? 0,
                 x.Reviews.Count,
                 x.Address.City + " / " + x.Address.Street,
-                x.Services,
+                x.Services.Select(s => s.Name).ToList(),
                 x.IsEmergencyAvailable
             )),
 
@@ -205,17 +219,16 @@ namespace Web.Infrastructure.Service
             {
                 query = query.Where(x => x.PricePerNight <= filters.PriceMax.Value);
             }
-
-              var servicesFilter = filters.Services?
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => s.Trim().ToLower())
-            .ToList();
+            var servicesFilter = filters.Services?
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s => s.Trim().ToLower())
+                .ToList();
 
             if (servicesFilter?.Any() == true)
             {
-                query = query.Where(x => x.Services != null &&
-                    x.Services.Any(s => servicesFilter.Contains(s.ToLower())));
+                query = query.Where(x => x.Services.Any(s => servicesFilter.Contains(s.Name.ToLower())));
             }
+
             return query;
 
         }
