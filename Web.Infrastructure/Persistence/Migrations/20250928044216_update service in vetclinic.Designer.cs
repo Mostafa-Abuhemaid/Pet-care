@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Persistence.Data;
 namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250928044216_update service in vetclinic")]
+    partial class updateserviceinvetclinic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -444,6 +447,10 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.Property<decimal>("PricePerNight")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Services")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -1099,40 +1106,6 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.ToTable("Special_Offers");
                 });
 
-            modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Createdon")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedByid")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Updatedon")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("VetClinicId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VetClinicId");
-
-                    b.ToTable("VetClinicService");
-                });
-
             modelBuilder.Entity("Web.Domain.Entites.VetSchedule", b =>
                 {
                     b.Property<int>("Id")
@@ -1446,17 +1419,6 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
-                {
-                    b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
-                        .WithMany("Services")
-                        .HasForeignKey("VetClinicId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("VetClinic");
-                });
-
             modelBuilder.Entity("Web.Domain.Entites.VetSchedule", b =>
                 {
                     b.HasOne("PetCare.Api.Entities.VetClinic", "vetClinic")
@@ -1471,8 +1433,6 @@ namespace Web.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("PetCare.Api.Entities.VetClinic", b =>
                 {
                     b.Navigation("Reviews");
-
-                    b.Navigation("Services");
 
                     b.Navigation("appointments");
 
