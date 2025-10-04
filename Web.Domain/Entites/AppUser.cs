@@ -13,6 +13,7 @@ namespace Web.Domain.Entites
     {
         public string FullName { get; set; }=string.Empty;
         public Gender gender {  get; set; }
+        public string ?PhotoURl { get; set; }=string.Empty ;
 
         public ICollection<Pet> Pets { get; set; } =[];
         public ICollection<Cart> Carts { get; set; }=[];

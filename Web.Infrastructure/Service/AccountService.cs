@@ -6,25 +6,32 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 using Web.Application.DTOs.AccountDTO;
+using Web.Application.DTOs.PetProfileDTO;
+using Web.Application.DTOs.ProductDTO;
+using Web.Application.DTOs.VetDTO;
 using Web.Application.Interfaces;
 using Web.Application.Response;
 using Web.Domain.Entites;
+using Web.Infrastructure.Persistence.Data;
 
 namespace Web.Infrastructure.Service
 {
     public class AccountService : IAccountService
     {
+        private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;    
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly IMemoryCache _memoryCache;
        
-        public AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration, ITokenService tokenService, IMapper mapper, IMemoryCache memoryCache, IEmailService emailService)
+        public AccountService(AppDbContext context,UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration, ITokenService tokenService, IMapper mapper, IMemoryCache memoryCache, IEmailService emailService)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager; 
             _tokenService = tokenService;         
@@ -141,6 +148,80 @@ namespace Web.Infrastructure.Service
                 return new BaseResponse<bool>(false, "An unexpected server error occurred. Please try again later.");
             }
         }
+
+
+        public async Task<BaseResponse<UserProfileDTO>>GetProfileUser(string userid)
+        {
+            var user=await _context.Users.Include(x=>x.Pets).FirstOrDefaultAsync(x=>x.Id== userid);
+            var response=new UserProfileDTO
+                (
+                 userid
+                ,user!.FullName
+                ,user.Email!
+                ,user.PhotoURl!
+                ,user.Pets.Select(x=>new Application.DTOs.PetProfileDTO.YourPetsDTO
+                (
+                    x.PhotoUrl!
+                    ,x.Name
+                    ,x.Breed
+                    ,x.Gender
+                    )).ToList());
+            return new BaseResponse<UserProfileDTO>(true,"success",response);
+           
+        }
+
+        public async Task<BaseResponse<IEnumerable<ProductResponse>>> GetFavoriteProduct(string userid)
+        {
+            var favoriteProducts = _context.Favorites
+                .Include(x => x.Product)
+                .Where(x => x.UserId == userid)
+                .Select(x => new ProductResponse(
+                    x.Product.Id,
+                    x.Product.Name,
+                    x.Product.Description,
+                    x.Product.Size,
+                    x.Product.rate,
+                    x.Product.Price,
+                    x.Product.ImageUrl
+                ))
+                .ToList();
+
+            return new BaseResponse<IEnumerable<ProductResponse>>(true,"Success",favoriteProducts);
+        }
+
+        public async Task<BaseResponse<IEnumerable<VetListItemFavoriteDto>>> GetFavoriteVetClinc(string userid)
+        {
+            var favoriteProducts = _context.Favorites
+                .Include(x => x.VetClinic)
+                .Where(x => x.UserId == userid)
+                .Select(x => new VetListItemFavoriteDto(
+                    x.VetClinic.Id,
+                    x.VetClinic.Name,
+                    x.VetClinic.Type,
+                    x.VetClinic.logoUrl,
+                    x.VetClinic.PricePerNight
+                ))
+                .ToList();
+
+            return new BaseResponse<IEnumerable<VetListItemFavoriteDto>>(true,"Success",favoriteProducts);
+        }
+        public async Task<BaseResponse<IEnumerable<YourPetsDTO>>> GetFavoritePets(string userid)
+        {
+            var favoriteProducts = _context.Favorites
+                .Include(x => x.Pet)
+                .Where(x => x.UserId == userid)
+                .Select(x => new YourPetsDTO(
+                    x.Pet.PhotoUrl,
+                    x.Pet.Name,
+                    x.Pet.Breed,
+                    x.Pet.Gender
+                ))
+                .ToList();
+
+            return new BaseResponse<IEnumerable<YourPetsDTO>>(true,"Success",favoriteProducts);
+        }
+
+
 
     }
 }

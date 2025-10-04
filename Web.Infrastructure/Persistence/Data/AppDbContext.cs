@@ -17,8 +17,6 @@ namespace Web.Infrastructure.Persistence.Data
         {}
         public DbSet<Pet_Cat> Pet_Cats { get; set; }
         public DbSet<Pet_Dog> Pet_Dogs { get; set; }
-
-        public DbSet<Cat_Data> Cat_Data { get; set; }
         public DbSet<BreedingRequest> BreedingRequests { get; set; }
         public DbSet<VetClinic> VetClinics { get; set; }
         public DbSet<VetReview> VetReviews { get; set; }

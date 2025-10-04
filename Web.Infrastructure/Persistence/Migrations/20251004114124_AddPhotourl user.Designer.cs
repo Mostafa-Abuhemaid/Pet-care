@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Persistence.Data;
 namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251004114124_AddPhotourl user")]
+    partial class AddPhotourluser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,6 +217,106 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.HasIndex("UpdatedByid");
 
                     b.ToTable("BreedingRequests");
+                });
+
+            modelBuilder.Entity("PetCare.Api.Entities.Cat_Data", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Breed")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Common_Diseases_Prevention")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Common_Vaccinations")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("Createdon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Energy_Level")
+                        .HasColumnType("int");
+
+                    b.Property<double>("FemaleAverageSize")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FemaleAverageWeight")
+                        .HasColumnType("float");
+
+                    b.Property<string>("FemaleTemperament")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Good_With")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Grooming_Frequency")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Health_Risks")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("Hypoallergenic")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("MaleAverageSize")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MaleAverageWeight")
+                        .HasColumnType("float");
+
+                    b.Property<string>("MaleTemperament")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Physical_Characteristics")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("Shedding_Level")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Trainability")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdatedByid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Updatedon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Vaccination_Frequency_ofTiming")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("vocalization")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cat_Data");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.Pet", b =>
@@ -723,25 +826,15 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Web.Domain.Entites.Favorite", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PetId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("VetClinicId")
-                        .HasColumnType("int");
+                    b.HasKey("ProductId", "UserId");
 
-                    b.HasKey("UserId", "ProductId", "PetId", "VetClinicId");
-
-                    b.HasIndex("PetId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("VetClinicId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Favorites");
                 });
@@ -1371,12 +1464,6 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Web.Domain.Entites.Favorite", b =>
                 {
-                    b.HasOne("PetCare.Api.Entities.Pet", "Pet")
-                        .WithMany()
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Web.Domain.Entites.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -1389,19 +1476,9 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
-                        .WithMany()
-                        .HasForeignKey("VetClinicId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Pet");
-
                     b.Navigation("Product");
 
                     b.Navigation("User");
-
-                    b.Navigation("VetClinic");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Order", b =>

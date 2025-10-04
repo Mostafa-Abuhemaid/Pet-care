@@ -19,4 +19,12 @@ namespace Web.Application.DTOs.VetDTO
         bool IsEmergencyAvailable
     );
 
+    public record VetListItemFavoriteDto(
+    int Id,
+    string Name,
+     string Type,
+    string logoUrl,
+    decimal PricePerNight
+    );
+
 }
