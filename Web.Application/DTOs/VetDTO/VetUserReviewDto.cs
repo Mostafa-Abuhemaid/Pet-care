@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Web.Application.DTOs.VetDTO
 {
-    public record VetReviewDto(
-       string UserName,
-       int Rating,
-       string Comment,
-       DateTime DatePosted
-   );
+    public record VetUserReviewDto
+    (
+   string Userid ,
+   string UserName,
+   string Comment ,
+   DateTime DatePosted 
+);
 
 
 
