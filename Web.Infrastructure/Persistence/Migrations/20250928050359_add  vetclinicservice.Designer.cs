@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Persistence.Data;
 namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250928050359_add  vetclinicservice")]
+    partial class addvetclinicservice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -663,18 +666,18 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
 
                     b.Property<bool>("Deleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<TimeOnly>("EndTime")
+                    b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<TimeOnly>("StartTime")
+                    b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
                     b.Property<string>("Status")
@@ -1099,78 +1102,6 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.ToTable("Special_Offers");
                 });
 
-            modelBuilder.Entity("Web.Domain.Entites.VetBooking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Createdon")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("PetId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ReceiptNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("Time")
-                        .HasColumnType("time");
-
-                    b.Property<string>("UpdatedByid")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Updatedon")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("VetClinicId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PetId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("VetClinicId");
-
-                    b.ToTable("vetBookings");
-                });
-
-            modelBuilder.Entity("Web.Domain.Entites.VetBookingService", b =>
-                {
-                    b.Property<int>("VetBookingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VetClinicServiceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("VetBookingId", "VetClinicServiceId");
-
-                    b.HasIndex("VetClinicServiceId");
-
-                    b.ToTable("vetBookingServices");
-                });
-
             modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
                 {
                     b.Property<int>("Id")
@@ -1180,23 +1111,17 @@ namespace Web.Infrastructure.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Createdon")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Deleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedByid")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Updatedon")
                         .HasColumnType("datetime2");
@@ -1205,10 +1130,6 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.HasIndex("UpdatedByid");
 
                     b.HasIndex("VetClinicId");
 
@@ -1236,10 +1157,10 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<TimeOnly>("EndTime")
+                    b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<TimeOnly>("StartTime")
+                    b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
                     b.Property<string>("UpdatedByid")
@@ -1528,52 +1449,6 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Web.Domain.Entites.VetBooking", b =>
-                {
-                    b.HasOne("PetCare.Api.Entities.Pet", "Pet")
-                        .WithMany()
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Web.Domain.Entites.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
-                        .WithMany()
-                        .HasForeignKey("VetClinicId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Pet");
-
-                    b.Navigation("User");
-
-                    b.Navigation("VetClinic");
-                });
-
-            modelBuilder.Entity("Web.Domain.Entites.VetBookingService", b =>
-                {
-                    b.HasOne("Web.Domain.Entites.VetBooking", "VetBooking")
-                        .WithMany("VetBookingServices")
-                        .HasForeignKey("VetBookingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Web.Domain.Entites.VetClinicService", "VetClinicService")
-                        .WithMany("VetBookingServices")
-                        .HasForeignKey("VetClinicServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("VetBooking");
-
-                    b.Navigation("VetClinicService");
-                });
-
             modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
                 {
                     b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
@@ -1637,16 +1512,6 @@ namespace Web.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("ProductStats")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Web.Domain.Entites.VetBooking", b =>
-                {
-                    b.Navigation("VetBookingServices");
-                });
-
-            modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
-                {
-                    b.Navigation("VetBookingServices");
                 });
 #pragma warning restore 612, 618
         }

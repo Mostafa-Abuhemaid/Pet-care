@@ -22,6 +22,9 @@ namespace Web.Infrastructure.Persistence.Data
         public DbSet<BreedingRequest> BreedingRequests { get; set; }
         public DbSet<VetClinic> VetClinics { get; set; }
         public DbSet<VetReview> VetReviews { get; set; }
+        public DbSet<VetSchedule> VetSchedule { get; set; }
+        public DbSet<VetClinicService> VetClinicService { get; set; }
+        public DbSet<Appointments> Appointments { get; set; }
 
         public DbSet<Category> categories { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -34,6 +37,8 @@ namespace Web.Infrastructure.Persistence.Data
         public DbSet<Address> addresses { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Special_Offers> Special_Offers { get; set; }
+        public DbSet<VetBooking> vetBookings { get; set; }
+        public DbSet<VetBookingService> vetBookingServices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

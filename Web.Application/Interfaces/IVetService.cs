@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PetCare.Api.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,10 @@ namespace Web.Application.Interfaces
         Task<BaseResponse<VetDetailsDto>> AddAsync(string userId, VetRequest request);
         Task<BaseResponse<PaginatedList<VetListItemDto>>> GetAllAsync(RequestFilters filters = default!,AddtionalRequestFilters addtionalRequestFilters=default!);
         Task<BaseResponse<VetDetailsDto>> GetAsync(int id);
+        Task<BaseResponse<List<AvailableSlotDto>>> GetAvailableSlotsAsync(int VetId,GetAvailableSlotsRequest request);
+        Task<BaseResponse<VetReviewsDto>> GetReviewsasync(int VetId);
+        Task<BaseResponse<VetBookingReceiptDTO>> BookingVet(string userid,int VetclinicId, BookVetDTO request);
+        Task<BaseResponse<bool>> ConfirmBookingAsync(int bookingId);
         Task<BaseResponse<bool>> UpdateAsync(int id, VetRequest request);
         Task<BaseResponse<bool>> DeleteAsync(int id);
     }

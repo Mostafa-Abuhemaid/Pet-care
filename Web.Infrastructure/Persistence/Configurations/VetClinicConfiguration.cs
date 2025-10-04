@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetCare.Api.Entities;
+using System.Text.Json;
 using Web.Infrastructure.Persistence.Configurations;
 
 namespace Web.Infrastructure.Persistence.Configurations

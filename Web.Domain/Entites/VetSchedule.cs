@@ -13,8 +13,8 @@ namespace Web.Domain.Entites
         public int VetClinicId { get; set; }
         public VetClinic vetClinic { get; set; } = default!;
         public DayOfWeekEnum DayOfWeek { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
     }
 
 }

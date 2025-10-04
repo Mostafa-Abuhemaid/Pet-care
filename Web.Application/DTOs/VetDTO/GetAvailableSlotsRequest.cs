@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace Web.Application.DTOs.VetDTO
 {
-    public record VetReviewDto(
-       string UserName,
-       int Rating,
-       string Comment,
-       DateTime DatePosted
-   );
-
-
-
+    public record GetAvailableSlotsRequest(
+      DateOnly Date
+  );
 }
