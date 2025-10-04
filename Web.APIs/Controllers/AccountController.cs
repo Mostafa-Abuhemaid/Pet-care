@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.AccessControl;
 using Web.Application.DTOs;
 using Web.Application.DTOs.AccountDTO;
 using Web.Application.Interfaces;
 using Web.Application.Response;
+using Web.Domain.Enums;
 using Web.Infrastructure.Service;
 
 namespace Web.APIs.Controllers
@@ -39,6 +42,40 @@ namespace Web.APIs.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        [HttpGet("Get-profile")]
+        [Authorize]
+        public async Task<IActionResult>GetProfile()
+        {
+            var userid = User.GetUserId();
+            var result=await _accountService.GetProfileUser(userid);
+            return result.Success ? Ok(result) : NotFound();
+        }
+
+        [HttpGet("Get-Favorite-Product")]
+        [Authorize]
+        public async Task<IActionResult> GetFavoriteProduct()
+        {
+            var userid = User.GetUserId();
+            var result = await _accountService.GetFavoriteProduct(userid);
+            return result.Success ? Ok(result) : NotFound();
+        }
+
+        [HttpGet("Get-Favorite-Pets")]
+        [Authorize]
+        public async Task<IActionResult> GetFavoritePets()
+        {
+            var userid = User.GetUserId();
+            var result = await _accountService.GetFavoritePets(userid);
+            return result.Success ? Ok(result) : NotFound();
+        }
+        [HttpGet("Get-Favorite-Vets")]
+        [Authorize]
+        public async Task<IActionResult> GetFavoriteVets()
+        {
+            var userid = User.GetUserId();
+            var result = await _accountService.GetFavoriteVetClinc(userid);
+            return result.Success ? Ok(result) : NotFound();
+        }
 
         [HttpPost("ForgetPassword")]
         public async Task<ActionResult<BaseResponse<string>>> ForgetPassword([FromBody] ForgetPasswordDto request)

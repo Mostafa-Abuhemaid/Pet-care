@@ -13,7 +13,7 @@ namespace Web.Application.DTOs.ProductDTO
        string Description,
        string Size,
         double rate,
-        int Price,
+        decimal Price,
         string ImageUrl
 
     );

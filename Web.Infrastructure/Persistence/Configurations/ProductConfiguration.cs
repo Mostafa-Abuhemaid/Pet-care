@@ -29,6 +29,8 @@ namespace Web.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.CategoryId)
                 .HasConstraintName("FK_Product_Category"); // اختياري
 
+
+
             builder.HasOne(p => p.ProductStats)
                 .WithOne(s => s.Product)
                 .HasForeignKey<ProductStats>(s => s.ProductId);
@@ -37,8 +39,7 @@ namespace Web.Infrastructure.Persistence.Configurations
             builder.HasIndex(x => x.Name);
             builder.HasIndex(x => x.Deleted);
             builder.HasIndex(x => x.StockQuantity);
-        
-    }
-    }
 
+        }
+    }
 }
