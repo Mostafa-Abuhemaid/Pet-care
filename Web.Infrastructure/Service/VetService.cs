@@ -89,24 +89,52 @@ namespace Web.Infrastructure.Service
 
         public async Task<BaseResponse<VetDetailsDto>> GetAsync(int id)
         {
-            if (!await _context.VetClinics.AnyAsync(x => x.Id == id))
-                return new BaseResponse<VetDetailsDto>(false, $"Vet with {id} is Not Found !");
-
-            if (await _context.VetClinics.AnyAsync(x => x.Id == id && x.Deleted))
-                return new BaseResponse<VetDetailsDto>(false, $"Vet with {id} is Deleted !");
-
             var vet = await _context.VetClinics
                 .Include(x => x.Services)
                 .Include(x => x.Address)
                 .Include(x => x.vetSchedules)
                 .Include(x => x.appointments)
-                .Include(x => x.Reviews)
-                .ThenInclude(x => x.AppUser)
+                .Include(x => x.Reviews).ThenInclude(r => r.AppUser)
                 .FirstOrDefaultAsync(x => x.Id == id);
-            var response = vet.Adapt<VetDetailsDto>();
+
+            if (vet == null)
+                return new BaseResponse<VetDetailsDto>(false, $"Vet with {id} is Not Found !");
+
+            if (vet.Deleted)
+                return new BaseResponse<VetDetailsDto>(false, $"Vet with {id} is Deleted !");
+
+            var response = new VetDetailsDto(
+                vet.Id,
+                vet.Name,
+                vet.Description,
+                vet.Phone,
+                vet.logoUrl,
+                vet.Type.ToString(),   // Enum → String
+                vet.Services.Select(s => s.Name).ToList(),
+                $"{vet.Address.Country}/{vet.Address.City}/{vet.Address.Street}",
+                vet.PricePerNight,
+                vet.IsEmergencyAvailable,
+                vet.Experience,
+                vet.CountOfPatients,
+                vet.Reviews.Any() ? vet.Reviews.Average(r => r.Rating) : 0,
+                vet.Reviews.Count,
+                vet.Reviews.Select(r => new VetUserReviewDto (
+                    r.AppUser.Id,
+                    r.AppUser.FullName,
+                    r.Comment,
+                    r.Createdon
+                )).ToList(),
+                vet.vetSchedules.Select(s => new VetScheduleDto(
+                    s.DayOfWeek.ToString(),
+                    s.StartTime,
+                    s.EndTime
+                )).ToList()
+            );
 
             return new BaseResponse<VetDetailsDto>(true, "Success!", response);
         }
+
+
 
 
         public async Task<BaseResponse<List<AvailableSlotDto>>> GetAvailableSlotsAsync(int VetId, GetAvailableSlotsRequest request)
@@ -195,6 +223,135 @@ namespace Web.Infrastructure.Service
             await _context.SaveChangesAsync();
 
             return new BaseResponse<bool>(true, "Updated successfully.", true);
+        }
+
+        public async Task <BaseResponse<VetReviewsDto>>GetReviewsasync(int VetId)
+        {
+            var vet = await _context.VetClinics
+              .Include(x => x.Reviews)
+              .ThenInclude(x => x.AppUser)
+              .FirstOrDefaultAsync(x => x.Id == VetId);
+
+           
+       var vetUserReviewList = vet.Reviews
+    .Select(r => new VetUserReviewDto(
+        r.AppUserId,
+        r.AppUser.FullName,
+        r.Comment,
+        r.DatePosted
+    ))
+    .ToList();
+
+
+            var response = new VetReviewsDto
+            (
+                vet.Id,
+                vet.Reviews.Average(x => x.Rating),
+                vet.Reviews.Count(),
+                vetUserReviewList
+            );
+
+
+            return new BaseResponse<VetReviewsDto>(true,"Success",response);
+        }
+
+        public async Task<BaseResponse<VetBookingReceiptDTO>> BookingVet(string userId,int VetclinicId, BookVetDTO request)
+        {
+            var vet = await _context.VetClinics
+                .Include(c => c.Address)
+                .FirstOrDefaultAsync(x => x.Id == VetclinicId);
+
+            if (vet == null)
+                return new BaseResponse<VetBookingReceiptDTO>(false, "Vet clinic not found");
+
+            var existingBooking = await _context.vetBookings
+        .AnyAsync(b => b.UserId == userId
+                && b.PetId == request.PetId
+                && b.VetClinicId == VetclinicId
+                && b.Date == request.Date
+                && b.Time == request.Time);
+
+            if (existingBooking)
+            {
+                return new BaseResponse<VetBookingReceiptDTO>(
+                    false,
+                    "You already have a booking for this pet at the same clinic and time."
+                );
+            }
+
+
+
+            var clinicServices = await _context.VetClinicService
+                .Where(s => s.VetClinicId == VetclinicId)
+                .Select(s => s.Id)
+                .ToListAsync();
+
+      
+            var validServiceIds = request.ServiceIds
+                .Where(id => clinicServices.Contains(id))
+                .ToList();
+
+            var vetbooking = new VetBooking
+            {
+                UserId = userId,
+                PetId = request.PetId,
+                VetClinicId = VetclinicId,
+                Date = request.Date,
+                Time = request.Time,
+                Price = vet.PricePerNight,
+                Status = BookingStatus.Pending,
+                ReceiptNumber = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper(),
+                VetBookingServices = validServiceIds
+                    .Select(serviceId => new VetBookingService
+                    {
+                        VetClinicServiceId = serviceId
+                    }).ToList()
+            };
+
+            await _context.vetBookings.AddAsync(vetbooking);
+            await _context.SaveChangesAsync();
+
+            // Reload booking with includes
+            var loadedBooking = await _context.vetBookings
+                .Include(b => b.Pet)
+                .Include(b => b.VetClinic).ThenInclude(c => c.Address)
+                .Include(b => b.VetBookingServices).ThenInclude(vbs => vbs.VetClinicService)
+                .FirstOrDefaultAsync(b => b.Id == vetbooking.Id);
+
+            var response = new VetBookingReceiptDTO(
+                loadedBooking.ReceiptNumber,
+                loadedBooking.Id,
+                loadedBooking.Pet.Name,
+                loadedBooking.VetClinic.Name,
+                loadedBooking.Date,
+                loadedBooking.Time,
+                loadedBooking.Price,
+                loadedBooking.VetBookingServices.Select(x => x.VetClinicService.Name).ToList(),
+                $"{loadedBooking.VetClinic.Address.Country}/{loadedBooking.VetClinic.Address.City}/{loadedBooking.VetClinic.Address.Street}",
+                "Instructions / Terms:\r\n-Kindly note ..."
+            );
+
+            return new BaseResponse<VetBookingReceiptDTO>(true, "Success", response);
+        }
+
+        public async Task<BaseResponse<bool>> ConfirmBookingAsync(int bookingId)
+        {
+            var booking = await _context.vetBookings
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (booking == null)
+                return new BaseResponse<bool>(false, "Booking not found");
+
+            if (booking.Status == BookingStatus.Confirmed)
+                return new BaseResponse<bool>(false, "Booking already confirmed");
+
+            booking.Status = BookingStatus.Confirmed;
+             booking.Updatedon = DateTime.UtcNow; 
+
+            _context.vetBookings.Update(booking);
+            await _context.SaveChangesAsync();
+
+            return new BaseResponse<bool>(true, "Booking confirmed successfully", true);
         }
 
 

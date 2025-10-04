@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace Web.Application.DTOs.VetDTO
 {
-    public record VetScheduleDto(
-      string DayOfWeek,    // "Sunday"
-      TimeOnly StartTime,
-      TimeOnly EndTime
-  );
+    public record BookVetDTO
+ (
+     int PetId,
+     DateTime Date,
+     TimeSpan Time,
+     List<int> ServiceIds 
+ );
+
 }

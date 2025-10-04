@@ -13,6 +13,8 @@ namespace Web.Domain.Entites
         public VetClinic VetClinic { get; set; } = default!;
 
         public string Name { get; set; } = string.Empty;  // "Emergency", "Grooming", ...
+
+        public ICollection<VetBookingService> VetBookingServices { get; set; } = [];
     }
 
 }
