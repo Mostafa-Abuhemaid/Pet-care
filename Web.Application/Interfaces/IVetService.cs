@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Web.Application.Common;
 using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.DTOs.VetDTO;
+using Web.Application.DTOs.VetDTO.DownloadReceipt;
 using Web.Application.Response;
 
 namespace Web.Application.Interfaces
@@ -20,6 +21,7 @@ namespace Web.Application.Interfaces
         Task<BaseResponse<VetReviewsDto>> GetReviewsasync(int VetId);
         Task<BaseResponse<VetBookingReceiptDTO>> BookingVet(string userid,int VetclinicId, BookVetDTO request);
         Task<BaseResponse<bool>> ConfirmBookingAsync(int bookingId);
+        Task<BaseResponse<ReceiptPdfResult?>> GenerateVetReceiptPdfByBookingIdAsync(int bookingId);
         Task<BaseResponse<bool>> UpdateAsync(int id, VetRequest request);
         Task<BaseResponse<bool>> DeleteAsync(int id);
     }

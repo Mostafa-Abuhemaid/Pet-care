@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using QuestPDF.Infrastructure;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using System.Reflection;
 using System.Text;
@@ -105,6 +106,7 @@ namespace Web.APIs
             builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
             builder.Services.AddScoped<IPaymentService, StripePaymentService>();
             builder.Services.AddScoped<IVetService, VetService>();
+            QuestPDF.Settings.License = LicenseType.Community;
 
             // Mapping Configuration ==> AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfile));
