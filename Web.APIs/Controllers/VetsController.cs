@@ -59,6 +59,13 @@ namespace Web.APIs.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
+        [HttpGet("booking/{bookingId}/download")]
+        public async Task<IActionResult> DownloadByBookingId(int bookingId)
+        {
+            var result = await _vetService.GenerateVetReceiptPdfByBookingIdAsync(bookingId);
+            return File(result.Data.Content, result.Data.ContentType, result.Data.FileName);
+        }
+
         [HttpGet("Get-All-Vets")]
         public async Task<IActionResult> GetAll([FromQuery] RequestFilters filters = default!, [FromQuery] AddtionalRequestFilters addtionalRequestFilters=default!)
         {
