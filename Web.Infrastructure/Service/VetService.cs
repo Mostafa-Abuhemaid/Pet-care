@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PetCare.Api.Entities;
+using QuestPDF.Fluent;
 using Stripe;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using Web.Application.Common;
 using Web.Application.DTOs.PetProfileDTO;
 using Web.Application.DTOs.VetDTO;
+using Web.Application.DTOs.VetDTO.DownloadReceipt;
 using Web.Application.Files;
 using Web.Application.Interfaces;
 using Web.Application.Response;
@@ -355,6 +357,30 @@ namespace Web.Infrastructure.Service
         }
 
 
+        public async Task<BaseResponse<ReceiptPdfResult?>> GenerateVetReceiptPdfByBookingIdAsync(int bookingId)
+        {
+            var booking = await _context.vetBookings
+                .Include(b => b.Pet)
+                .Include(b => b.VetClinic).ThenInclude(c => c.Address)
+                .Include(b => b.VetBookingServices).ThenInclude(vbs => vbs.VetClinicService)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (booking == null)
+                return new BaseResponse<ReceiptPdfResult?>(false,"Booking not found ");
+
+            var dto = MapToDto(booking);
+
+            var document = new VetReceiptDocument(dto); 
+            using var ms = new MemoryStream();
+            document.GeneratePdf(ms);
+            var response= new ReceiptPdfResult
+            {
+                Content = ms.ToArray(),
+                FileName = $"Receipt_{dto.ReceiptNumber}.pdf"
+            };
+            return new BaseResponse<ReceiptPdfResult?>(true, "Success", response);
+        }
+
 
         private IQueryable<VetClinic> SearchResults(RequestFilters filters, IQueryable<VetClinic> query)
         {
@@ -437,6 +463,22 @@ query = query.Where(x => x.vetSchedules.Any(s =>
 
             return query;
 
+        }
+
+        private VetBookingReceiptDTO MapToDto(VetBooking booking)
+        {
+            return new VetBookingReceiptDTO(
+                booking.ReceiptNumber,
+                booking.Id,
+                booking.Pet?.Name ?? "—",
+                booking.VetClinic?.Name ?? "—",
+                booking.Date,
+                booking.Time,
+                booking.Price,
+                booking.VetBookingServices?.Select(x => x.VetClinicService?.Name ?? "—").ToList() ?? new List<string>(),
+                $"{booking.VetClinic?.Address?.Country}/{booking.VetClinic?.Address?.City}/{booking.VetClinic?.Address?.Street}",
+                "Instructions / Terms:\r\n-Kindly note ..."
+            );
         }
 
     }
