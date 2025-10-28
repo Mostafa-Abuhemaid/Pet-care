@@ -26,12 +26,18 @@ namespace Web.Infrastructure.Service
                 : JsonSerializer.Deserialize<T>(cachedValue);
         }
 
-        public async Task SetAsync<T>(string key, T value) where T : class
+        public async Task SetAsync<T>(string key, T value, TimeSpan? absoluteExpiration = null) where T : class
         {
             _logger.LogInformation("Set cache with key: {key}", key);
 
-            await _distributedCache.SetStringAsync(key, JsonSerializer.Serialize(value));
+            var options = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = absoluteExpiration ?? TimeSpan.FromHours(6)
+            };
+
+            await _distributedCache.SetStringAsync(key, JsonSerializer.Serialize(value), options);
         }
+
 
         public async Task RemoveAsync(string key)
         {

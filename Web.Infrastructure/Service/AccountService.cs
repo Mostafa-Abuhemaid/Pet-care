@@ -170,6 +170,36 @@ namespace Web.Infrastructure.Service
            
         }
 
+
+        public async Task<BaseResponse<IEnumerable<UserHistoryDto>>> GetHistory(string userid)
+
+        {
+            var histories = await _context.histories
+                .Include(x => x.VetClinic)
+                .Include(x => x.Product)
+                .Include(x => x.User)
+                .Where(x => x.UserId == userid)
+                .AsNoTracking()
+                .OrderBy(x => x.Date)
+                .Select(x => new UserHistoryDto(
+                    userid,
+                    x.Name,
+                    x.Desciption,
+                    x.Unit,
+                   x.ImageURL,
+                    x.Price,
+                    x.Date
+                    ))
+                .Take(20)
+                .ToListAsync();
+            if(histories is  null)
+            return new BaseResponse<IEnumerable<UserHistoryDto>>(false, "Your History is Empty");
+
+
+            return new BaseResponse<IEnumerable<UserHistoryDto>>(true, "Success", histories);
+
+        }
+
         public async Task<BaseResponse<IEnumerable<ProductResponse>>> GetFavoriteProduct(string userid)
         {
             var favoriteProducts = _context.Favorites
@@ -185,6 +215,8 @@ namespace Web.Infrastructure.Service
                     x.Product.ImageUrl
                 ))
                 .ToList();
+            if(favoriteProducts is null)
+                return new BaseResponse<IEnumerable<ProductResponse>>(false, "Your favorite Products is Empty");
 
             return new BaseResponse<IEnumerable<ProductResponse>>(true,"Success",favoriteProducts);
         }
@@ -202,6 +234,8 @@ namespace Web.Infrastructure.Service
                     x.VetClinic.PricePerNight
                 ))
                 .ToList();
+            if (favoriteProducts is null)
+                return new BaseResponse<IEnumerable<VetListItemFavoriteDto>>(false, "Your favorite Products is Empty");
 
             return new BaseResponse<IEnumerable<VetListItemFavoriteDto>>(true,"Success",favoriteProducts);
         }

@@ -56,5 +56,12 @@ namespace Web.APIs.Controllers
             var result = await _productService.GetBestSellerProductsAsync(filters);
             return Ok(result);
         }
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search([FromQuery] string Query )
+        {
+            var result = await _productService.Search(Query);
+            return Ok(result);
+        }
     }
 }

@@ -9,7 +9,8 @@ namespace Web.Infrastructure.Service
     public interface ICacheService
     {
         Task<T?> GetAsync<T>(string key)where T:class;
-        Task SetAsync<T>(string key,T value)where T:class;
-        Task RemoveAsync(string key);
+        Task SetAsync<T>(string key, T value, TimeSpan? absoluteExpiration = null) where T : class;
+  
+          Task RemoveAsync(string key);
     }
 }

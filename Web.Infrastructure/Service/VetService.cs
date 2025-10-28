@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using PetCare.Api.Entities;
 using QuestPDF.Fluent;
 using Stripe;
+using Stripe.Climate;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -336,9 +337,9 @@ namespace Web.Infrastructure.Service
             return new BaseResponse<VetBookingReceiptDTO>(true, "Success", response);
         }
 
-        public async Task<BaseResponse<bool>> ConfirmBookingAsync(int bookingId)
+        public async Task<BaseResponse<bool>> ConfirmBookingAsync(string userid, int bookingId)
         {
-            var booking = await _context.vetBookings
+            var booking = await _context.vetBookings.Include(x=>x.VetClinic)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             if (booking == null)
@@ -349,8 +350,20 @@ namespace Web.Infrastructure.Service
 
             booking.Status = BookingStatus.Confirmed;
              booking.Updatedon = DateTime.UtcNow; 
-
             _context.vetBookings.Update(booking);
+
+            var history = new History
+            {
+                Name=booking.VetClinic.Name,
+                Desciption=booking.VetClinic.Description,
+                Price=booking.VetClinic.PricePerNight,
+                Unit="Session",
+                Date = DateTime.Now,
+                UserId = userid,
+                VetClinicId = booking.VetClinicId
+            };
+
+            _context.histories.Add(history);
             await _context.SaveChangesAsync();
 
             return new BaseResponse<bool>(true, "Booking confirmed successfully", true);

@@ -44,7 +44,7 @@ namespace Web.APIs.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        [HttpGet("Book-Vet/{VetclinicId}")]
+        [HttpPost("Book-Vet/{VetclinicId}")]
         public async Task<IActionResult> BookingVet([FromRoute]int VetclinicId,[FromBody]BookVetDTO request)
         {
             var userid=User.GetUserId();
@@ -55,7 +55,8 @@ namespace Web.APIs.Controllers
         [HttpGet("ConfirmBooking-Vet/{VetclinicId}")]
         public async Task<IActionResult> ConfirmBooking([FromRoute] int VetclinicId)
         {
-            var result = await _vetService.ConfirmBookingAsync(VetclinicId);
+            var userid=User.GetUserId();
+            var result = await _vetService.ConfirmBookingAsync(userid,VetclinicId);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 

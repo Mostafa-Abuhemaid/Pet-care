@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,7 @@ namespace Web.Domain.Entites
         public string Street { get; set; } = string.Empty;
         public bool IsDefault { get; set; } = false; 
     }
+
+
 
 }
