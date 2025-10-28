@@ -51,6 +51,16 @@ namespace Web.APIs.Controllers
             return result.Success ? Ok(result) : NotFound();
         }
 
+        [HttpGet("Get-History")]
+        [Authorize]
+        public async Task<IActionResult> GetHistory()
+        {
+            var userid = User.GetUserId();
+            var result=await _accountService.GetHistory(userid);
+            return result.Success ? Ok(result) : NotFound();
+        }
+
+
         [HttpGet("Get-Favorite-Product")]
         [Authorize]
         public async Task<IActionResult> GetFavoriteProduct()

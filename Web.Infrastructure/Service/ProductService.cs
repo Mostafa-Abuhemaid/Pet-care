@@ -11,6 +11,8 @@ using Web.Application.DTOs.ProductDTO;
 using Web.Application.Interfaces;
 using Web.Application.Response;
 using Web.Domain.Entites;
+using FuzzySharp;
+
 using Web.Infrastructure.Persistence.Data;
 
 namespace Web.Infrastructure.Service
@@ -122,7 +124,32 @@ namespace Web.Infrastructure.Service
             return new BaseResponse<ProductDetailsResponse>(true, ProductMessages.ProductsRetrieved, product.Adapt<ProductDetailsResponse>());
         }
 
+        public async Task<BaseResponse<List<ProductResponse>>> Search(string query)
+        {
+            var results = _context.Products
+                .AsEnumerable()
+                .Select(p => new
+                {
+                    Product = p,
+                    Score = Fuzz.Ratio(query, p.Name)
+                })
+                .Where(x => x.Score > 10)
+                .OrderByDescending(x => x.Score)
+                .Select(x => new ProductResponse
+                (
+                  x.Product.Id,
+                  x.Product.Name,
+                  x.Product.Description,
+                  x.Product.Size,
+                  x.Product.rate,
+                  x.Product.Price,
+                  x.Product.ImageUrl
+                    ))
+                .Take(50)
+                .ToList();
 
+            return new BaseResponse<List<ProductResponse>>(true,"Success",results);
+        }
         private (string SortColumn, string SortDirection) GetValidatedSortOptions(RequestFilters filters)
         {
             var allowedSortColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase){"Name", "Price", "CreatedDate"};

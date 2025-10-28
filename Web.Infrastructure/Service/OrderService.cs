@@ -15,7 +15,7 @@ using Web.Infrastructure.Persistence.Data;
 
 namespace Web.Infrastructure.Service
 {
-    public class OrderService(PricingService pricingService,AppDbContext context) : IOrderService
+    public class OrderService(PricingService pricingService, AppDbContext context) : IOrderService
     {
         private readonly AppDbContext _context = context;
         private readonly PricingService _pricingService = pricingService;
@@ -46,6 +46,26 @@ namespace Web.Infrastructure.Service
             };
 
             await _context.orders.AddAsync(order);
+
+            var products = cart.Items.Select(x => x.Product).ToList();
+            foreach (var product in products)
+            {
+                var quantity = cart.Items.First(x => x.ProductId == product.Id).Quantity;
+
+                var history = new History
+                {
+                    Name = product.Name,
+                    Desciption = product.Description,
+                    Price = product.Price,
+                    Unit = $"{quantity} Peace",
+                    Date = DateTime.Now,
+                    UserId = userId,
+                    ProductId = product.Id
+                };
+                _context.histories.Add(history);
+        };
+
+
             await _context.SaveChangesAsync();
 
             // return order id so caller (controller) can decide next step

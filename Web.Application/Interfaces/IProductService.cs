@@ -15,5 +15,6 @@ namespace Web.Application.Interfaces
         Task<BaseResponse<List<OffersProductResponse>>> GetSpecialOffersAsync();
         Task<BaseResponse<PaginatedList<ProductResponse>>> GetBestSellerProductsAsync(RequestFilters filters = null!);
         Task<BaseResponse<ProductDetailsResponse>> GetAsync(int id);
+        Task<BaseResponse<List<ProductResponse>>>Search(string query);
     }
 }
