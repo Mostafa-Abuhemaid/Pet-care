@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Infrastructure.Persistence.Data;
 
@@ -11,9 +12,11 @@ using Web.Infrastructure.Persistence.Data;
 namespace Web.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251023150206_AddPetAdvice")]
+    partial class AddPetAdvice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,7 +216,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("BreedingRequests", (string)null);
+                    b.ToTable("BreedingRequests");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.Pet", b =>
@@ -370,7 +373,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("VetClinics", (string)null);
+                    b.ToTable("VetClinics");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.VetReview", b =>
@@ -424,7 +427,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("VetReviews", (string)null);
+                    b.ToTable("VetReviews");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Address", b =>
@@ -470,7 +473,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("addresses", (string)null);
+                    b.ToTable("addresses");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.AppUser", b =>
@@ -603,7 +606,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Cart", b =>
@@ -646,7 +649,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.CartItem", b =>
@@ -669,7 +672,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Category", b =>
@@ -718,7 +721,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("categories", (string)null);
+                    b.ToTable("categories");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Favorite", b =>
@@ -743,7 +746,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("Favorites", (string)null);
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.History", b =>
@@ -806,7 +809,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("histories", (string)null);
+                    b.ToTable("histories");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Order", b =>
@@ -860,7 +863,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("orders", (string)null);
+                    b.ToTable("orders");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Payment", b =>
@@ -898,7 +901,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("payments", (string)null);
+                    b.ToTable("payments");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.PetAdvice", b =>
@@ -921,7 +924,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PetAdvices", (string)null);
+                    b.ToTable("PetAdvices");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Product", b =>
@@ -992,7 +995,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.ProductStats", b =>
@@ -1026,7 +1029,7 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("ProductStats", (string)null);
+                    b.ToTable("ProductStats");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.PromoCode", b =>
@@ -1061,7 +1064,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("promoCodes", (string)null);
+                    b.ToTable("promoCodes");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Special_Offers", b =>
@@ -1095,7 +1098,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Special_Offers", (string)null);
+                    b.ToTable("Special_Offers");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetBooking", b =>
@@ -1152,7 +1155,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("vetBookings", (string)null);
+                    b.ToTable("vetBookings");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetBookingService", b =>
@@ -1167,7 +1170,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicServiceId");
 
-                    b.ToTable("vetBookingServices", (string)null);
+                    b.ToTable("vetBookingServices");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
@@ -1211,7 +1214,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("VetClinicService", (string)null);
+                    b.ToTable("VetClinicService");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetSchedule", b =>
@@ -1257,7 +1260,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("VetSchedule", (string)null);
+                    b.ToTable("VetSchedule");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.Pet_Cat", b =>

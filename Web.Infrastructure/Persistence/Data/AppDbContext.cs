@@ -37,6 +37,8 @@ namespace Web.Infrastructure.Persistence.Data
         public DbSet<Special_Offers> Special_Offers { get; set; }
         public DbSet<VetBooking> vetBookings { get; set; }
         public DbSet<VetBookingService> vetBookingServices { get; set; }
+        public DbSet<History> histories { get; set; }
+        public DbSet<PetAdvice> PetAdvices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

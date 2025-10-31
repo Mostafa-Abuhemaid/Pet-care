@@ -21,6 +21,7 @@ namespace PetCare.Api.Entities
             public ICollection<VetReview> Reviews { get; set; } = [];
             public ICollection<VetSchedule> vetSchedules { get; set; } = [];
             public ICollection<Appointments> appointments { get; set; } = [];
+            public ICollection<History> Histories { get; set; } = [];
     }
 }
 

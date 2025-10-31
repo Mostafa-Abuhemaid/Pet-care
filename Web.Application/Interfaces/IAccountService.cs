@@ -19,6 +19,7 @@ namespace Web.Application.Interfaces
         Task<BaseResponse<bool>> VerifyOTPAsync(VerfiyCodeDto verify);
         Task<BaseResponse<bool>> ResetPasswordAsync(ResetPasswordDto resetPassword);
         Task<BaseResponse<UserProfileDTO>> GetProfileUser(string userid);
+        Task<BaseResponse<IEnumerable<UserHistoryDto>>> GetHistory(string userid);
         Task<BaseResponse<IEnumerable<ProductResponse>>> GetFavoriteProduct(string userid);
         Task<BaseResponse<IEnumerable<YourPetsDTO>>> GetFavoritePets(string userid);
         Task<BaseResponse<IEnumerable<VetListItemFavoriteDto>>> GetFavoriteVetClinc(string userid);
