@@ -57,15 +57,21 @@ namespace Web.Infrastructure.Service
 
         private string BuildPrompt(PetType petType, string breed, string petName)
         {
-            return $@"You are a professional pet care expert. 
-          Provide one practical and helpful tip for taking care of a {petType.ToString()} of breed {breed} named {petName}.
+            string greeting = !string.IsNullOrEmpty(petName) ? $"for {petName} " : "";
 
-            Requirements:
-            - Keep it short (1-2 sentences)
-            - Make it actionable and specific
-            - Focus on health, nutrition, training, grooming, or exercise
-            - Be friendly and encouraging
-            Tip:";
+            return $@"You are a world-class pet care expert specializing in the {breed} {petType.ToString()} breed.
+Provide one practical, non-obvious, and helpful tip {greeting}based on their specific breed characteristics.
+
+Requirements:
+- The tip must be 1-2 sentences maximum.
+- The tip must be actionable and specific to the {breed} breed (not just for {petType.ToString()}s in general).
+- Focus on a specific aspect of health, nutrition, training, grooming, or exercise.
+
+CRITICAL:
+- DO NOT provide generic or common-sense advice (e.g., 'love your pet', 'give them fresh water', 'play with them', 'take them to the vet').
+- DO NOT just state a fact; it must be an actionable *tip*.
+
+Breed-Specific Tip:";
         }
 
         private (string url, StringContent content) BuildRequest(string prompt)
@@ -84,7 +90,7 @@ namespace Web.Infrastructure.Service
             },
                 GenerationConfig = new GenerationConfig
                 {
-                    Temperature = 0.8,
+                    Temperature = 0.5,
                     MaxOutputTokens = 100
                 }
             };
