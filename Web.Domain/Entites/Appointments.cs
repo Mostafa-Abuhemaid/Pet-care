@@ -12,6 +12,8 @@ namespace Web.Domain.Entites
     {
         public int VetClinicId { get; set; }
         public VetClinic VetClinic { get; set; } = default!;
+        public int? BoardingId { get; set; }
+        public Boarding Boarding { get; set; } = default!;
         public string AppUserId { get; set; } = string.Empty;
         public AppUser AppUser { get; set; } = default!;
         public DateTime Date { get;set; }            // التاريخ اللي اتحدد

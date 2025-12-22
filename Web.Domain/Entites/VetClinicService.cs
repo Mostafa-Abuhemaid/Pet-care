@@ -11,6 +11,8 @@ namespace Web.Domain.Entites
     {
         public int VetClinicId { get; set; }   // FK
         public VetClinic VetClinic { get; set; } = default!;
+        public int? BoardingId { get; set; }
+        public Boarding Boarding { get; set; } = default!;
 
         public string Name { get; set; } = string.Empty;  // "Emergency", "Grooming", ...
 

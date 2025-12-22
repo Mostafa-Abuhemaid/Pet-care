@@ -75,13 +75,6 @@ namespace PetCare.Api.Controllers
             return StatusCode(result.Success ? 200 : 404, result);
         }
 
-        [HttpGet("Avaliable_Pets_Mating")]
-        public async Task<IActionResult> AvaliableMating([FromQuery]RequestFilters filters,CancellationToken cancellationToken)
-        {
-            var _service = _factory.Create(0);
 
-            var result = await _service.AvaliableMatingAsync(filters, cancellationToken);
-            return StatusCode(result.Success ? 200 : 404, result);
-        }
     }
 }

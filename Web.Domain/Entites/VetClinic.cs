@@ -3,17 +3,8 @@ using Web.Domain.Entites;
 
 namespace PetCare.Api.Entities
 {
-    public class VetClinic: BaseModel
+    public class VetClinic: BaseService
     {
-            public string Name { get; set; }=string .Empty;
-            public string Description { get; set; }= string.Empty;
-            public string Phone { get; set; }= string.Empty;
-            public string logoUrl { get; set; }= string.Empty;
-            public string Type { get; set; }=string.Empty;
-           public int AddressId { get; set; }   
-           public Address Address { get; set; } = default!;
-
-            public decimal PricePerNight { get; set; }
             public bool IsEmergencyAvailable { get; set; }
             public int Experience { get; set; }
             public int CountOfPatients { get; set; }

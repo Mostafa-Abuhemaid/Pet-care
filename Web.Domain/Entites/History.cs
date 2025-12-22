@@ -23,5 +23,8 @@ namespace Web.Domain.Entites
 
         public int? VetClinicId { get; set; }
         public VetClinic? VetClinic { get; set; }
+
+        public int? BoardingId { get; set; }
+        public Boarding Boarding { get; set; } = default!;
     }
 }
