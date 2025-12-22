@@ -108,6 +108,7 @@ namespace Web.APIs
             builder.Services.AddScoped<IVetService, VetService>();
             builder.Services.AddScoped<IGeminiService, GeminiService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IBoardingService, BoardingService>();
             QuestPDF.Settings.License = LicenseType.Community;
 
             // Mapping Configuration ==> AutoMapper

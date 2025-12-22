@@ -124,16 +124,21 @@ namespace Web.Infrastructure.Service
 
             var allPetsQuery =_context.Pet_Dogs
                 .Where(d => d.breedingRequestStatus == "intact")
-                .Select(d => new { d.Id, d.Name, d.Gender, d.Breed, d.Color, d.PhotoUrl, Type = "Dog" })
+                .Select(d => new { d.Id, d.Name, d.Gender, d.Breed, d.Color, d.PhotoUrl, Type = "Dog",d.AppUser.addresses })
                 .Concat(_context.Pet_Cats
                     .Where(c => c.breedingRequestStatus == "intact")
-                    .Select(c => new { c.Id, c.Name, c.Gender, c.Breed, c.Color, c.PhotoUrl, Type = "Cat" }))
+                    .Select(c => new { c.Id, c.Name, c.Gender, c.Breed, c.Color, c.PhotoUrl, Type = "Cat",c.AppUser.addresses }))
                 .OrderBy(p => p.Id)
                 .Skip(skip)
                 .Take(filters.PageSize);
 
+            var address = allPetsQuery
+                .Select(p => p.addresses.FirstOrDefault())
+                    .Where(x => x != null)
+                    .Select(x => $"{x.Country}/{x.City}").ToString();
+
             var result = await allPetsQuery
-                .Select(p => new PetMatingResponse(p.Id, p.Name, p.Gender, p.Breed, p.Color, p.PhotoUrl, p.Type))
+                .Select(p => new PetMatingResponse(p.Id, p.Name, p.Gender, p.Breed, p.Color, p.PhotoUrl, p.Type, address))
                 .ToListAsync(cancellationToken);
 
             var response = new PaginatedList<PetMatingResponse>(

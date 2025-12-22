@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Stripe;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace Web.Application.DTOs.PetProfileDTO
         string Breed,
         string Color,
         string PhotoUrl,
-        string Type   
+        string Type,
+       string Address
     );
 
 }

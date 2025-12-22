@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\CategoryId\" />
+    <Folder Include="wwwroot\Boarding\" />
     <Folder Include="wwwroot\Vet\" />
     <Folder Include="wwwroot\Pet\" />
   </ItemGroup>

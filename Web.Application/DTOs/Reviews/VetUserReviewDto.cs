@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Web.Application.DTOs.VetDTO
+namespace Web.Application.DTOs.Reviews
 {
     public record VetUserReviewDto
     (

@@ -46,15 +46,17 @@ namespace PetCare.Api.Entities
              [Url]
             [MaxLength(255)]
             public string ?PhotoUrl { get; set; } = string.Empty;
+         public string breedingRequestStatus { get; set; }
 
+        [Required]
+        public PetType petType { get; set; }
              [Required]
             [ForeignKey("AppUser")]
             public string AppUserId { get; set; } = string.Empty;
-        [Required]
-        public PetType petType { get; set; }
         public AppUser AppUser { get; set; } = default!;
 
-         public string breedingRequestStatus { get; set; }
-        }
+        public int ?BoardingId { get; set; }
+        public Boarding Boarding { get; set; } = default!;
+    }
 
 }

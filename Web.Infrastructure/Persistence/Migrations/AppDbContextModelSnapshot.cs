@@ -213,7 +213,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("BreedingRequests", (string)null);
+                    b.ToTable("BreedingRequests");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.Pet", b =>
@@ -231,6 +231,9 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.Property<DateOnly>("BirthDay")
                         .HasColumnType("date");
+
+                    b.Property<int?>("BoardingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Breed")
                         .IsRequired()
@@ -292,6 +295,8 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("BoardingId");
 
                     b.ToTable((string)null);
 
@@ -370,7 +375,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("VetClinics", (string)null);
+                    b.ToTable("VetClinics");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.VetReview", b =>
@@ -384,6 +389,9 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.Property<string>("AppUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("BoardingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Comment")
                         .IsRequired()
@@ -420,11 +428,13 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("BoardingId");
+
                     b.HasIndex("UpdatedByid");
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("VetReviews", (string)null);
+                    b.ToTable("VetReviews");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Address", b =>
@@ -470,7 +480,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("addresses", (string)null);
+                    b.ToTable("addresses");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.AppUser", b =>
@@ -561,6 +571,9 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("BoardingId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Createdon")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -599,11 +612,79 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("BoardingId");
+
                     b.HasIndex("UpdatedByid");
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.Boarding", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Createdon")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<bool>("Deleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("PricePerNight")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedByid")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("Updatedon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("logoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("PricePerNight");
+
+                    b.HasIndex("UpdatedByid");
+
+                    b.ToTable("Boarding");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Cart", b =>
@@ -646,7 +727,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.CartItem", b =>
@@ -669,7 +750,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Category", b =>
@@ -718,7 +799,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("categories", (string)null);
+                    b.ToTable("categories");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Favorite", b =>
@@ -743,7 +824,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("Favorites", (string)null);
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.History", b =>
@@ -753,6 +834,9 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BoardingId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Createdon")
                         .HasColumnType("datetime2");
@@ -800,13 +884,15 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BoardingId");
+
                     b.HasIndex("ProductId");
 
                     b.HasIndex("UserId");
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("histories", (string)null);
+                    b.ToTable("histories");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Order", b =>
@@ -860,7 +946,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("orders", (string)null);
+                    b.ToTable("orders");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Payment", b =>
@@ -898,7 +984,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("payments", (string)null);
+                    b.ToTable("payments");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.PetAdvice", b =>
@@ -921,7 +1007,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PetAdvices", (string)null);
+                    b.ToTable("PetAdvices");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Product", b =>
@@ -992,7 +1078,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UpdatedByid");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.ProductStats", b =>
@@ -1026,7 +1112,7 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("ProductStats", (string)null);
+                    b.ToTable("ProductStats");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.PromoCode", b =>
@@ -1061,7 +1147,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("promoCodes", (string)null);
+                    b.ToTable("promoCodes");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Special_Offers", b =>
@@ -1095,7 +1181,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Special_Offers", (string)null);
+                    b.ToTable("Special_Offers");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetBooking", b =>
@@ -1152,7 +1238,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("vetBookings", (string)null);
+                    b.ToTable("vetBookings");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetBookingService", b =>
@@ -1167,7 +1253,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicServiceId");
 
-                    b.ToTable("vetBookingServices", (string)null);
+                    b.ToTable("vetBookingServices");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
@@ -1177,6 +1263,9 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BoardingId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Createdon")
                         .ValueGeneratedOnAdd()
@@ -1205,13 +1294,15 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BoardingId");
+
                     b.HasIndex("Name");
 
                     b.HasIndex("UpdatedByid");
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("VetClinicService", (string)null);
+                    b.ToTable("VetClinicService");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.VetSchedule", b =>
@@ -1257,7 +1348,7 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("VetClinicId");
 
-                    b.ToTable("VetSchedule", (string)null);
+                    b.ToTable("VetSchedule");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.Pet_Cat", b =>
@@ -1352,7 +1443,13 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Web.Domain.Entites.Boarding", "Boarding")
+                        .WithMany("pets")
+                        .HasForeignKey("BoardingId");
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("Boarding");
                 });
 
             modelBuilder.Entity("PetCare.Api.Entities.VetClinic", b =>
@@ -1374,6 +1471,10 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Web.Domain.Entites.Boarding", "Boarding")
+                        .WithMany("Reviews")
+                        .HasForeignKey("BoardingId");
+
                     b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
                         .WithMany("Reviews")
                         .HasForeignKey("VetClinicId")
@@ -1381,6 +1482,8 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("AppUser");
+
+                    b.Navigation("Boarding");
 
                     b.Navigation("VetClinic");
                 });
@@ -1404,6 +1507,10 @@ namespace Web.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Web.Domain.Entites.Boarding", "Boarding")
+                        .WithMany("appointments")
+                        .HasForeignKey("BoardingId");
+
                     b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
                         .WithMany("appointments")
                         .HasForeignKey("VetClinicId")
@@ -1412,7 +1519,20 @@ namespace Web.Infrastructure.Persistence.Migrations
 
                     b.Navigation("AppUser");
 
+                    b.Navigation("Boarding");
+
                     b.Navigation("VetClinic");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.Boarding", b =>
+                {
+                    b.HasOne("Web.Domain.Entites.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Cart", b =>
@@ -1492,6 +1612,10 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Web.Domain.Entites.History", b =>
                 {
+                    b.HasOne("Web.Domain.Entites.Boarding", "Boarding")
+                        .WithMany("Histories")
+                        .HasForeignKey("BoardingId");
+
                     b.HasOne("Web.Domain.Entites.Product", "Product")
                         .WithMany("Histories")
                         .HasForeignKey("ProductId");
@@ -1505,6 +1629,8 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
                         .WithMany("Histories")
                         .HasForeignKey("VetClinicId");
+
+                    b.Navigation("Boarding");
 
                     b.Navigation("Product");
 
@@ -1614,11 +1740,17 @@ namespace Web.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Web.Domain.Entites.VetClinicService", b =>
                 {
+                    b.HasOne("Web.Domain.Entites.Boarding", "Boarding")
+                        .WithMany("Services")
+                        .HasForeignKey("BoardingId");
+
                     b.HasOne("PetCare.Api.Entities.VetClinic", "VetClinic")
                         .WithMany("Services")
                         .HasForeignKey("VetClinicId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Boarding");
 
                     b.Navigation("VetClinic");
                 });
@@ -1656,6 +1788,19 @@ namespace Web.Infrastructure.Persistence.Migrations
                     b.Navigation("addresses");
 
                     b.Navigation("orders");
+                });
+
+            modelBuilder.Entity("Web.Domain.Entites.Boarding", b =>
+                {
+                    b.Navigation("Histories");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Services");
+
+                    b.Navigation("appointments");
+
+                    b.Navigation("pets");
                 });
 
             modelBuilder.Entity("Web.Domain.Entites.Cart", b =>
